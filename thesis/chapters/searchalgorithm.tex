@@ -1,0 +1,32 @@
+\documentclass[a4paper,notoc,oneside]{tufte-book}
+\input{"../preamble.tex"}
+\begin{document}
+
+\chapter{A Search Algorithm}
+
+\emph{I have this partially, but so much has changed that it will need to be rewritten anyway. I would like to split it in two parts: the absolute minimal baseline algorithm in one section, and then another to describe all the extensions and optimizations.}\\
+
+\section{An Outline}
+
+Given an input matrix, the algorithm is initialized with: (a) probability mass function of the values in the matrix, (b) singleton pattern for each unique element in the matrix and (c) the under-fit instantiation matrix containing only singletons.  The baseline algorithm is composed out of four stages that are repeated every iteration:
+\begin{enumerate}
+\item Candidate search
+\item Gain computation
+\item Candidate selection
+\item Merging of patterns and their instances
+\end{enumerate}
+
+\subsection{Candidate Search}
+\subsection{Gain Computation}
+\subsection{Selecting and Merging Candidates}
+
+\section{Extensions and Improvements}
+
+\subsection{Pre-processing}
+\subsection{Reducing Self-Overlap}
+\subsection{Alternative Heuristics}
+\subsection{Local Search}
+\subsection{Noise-Tolerance}
+
+
+\end{document}
