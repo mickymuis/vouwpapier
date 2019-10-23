@@ -1,0 +1,36 @@
+\documentclass{llncs}
+\input{"../preamble.tex"}
+\begin{document}
+
+\section{Preliminaries}
+
+\subsection{Data Mining Through Compression}
+
+In the previous subsection we have discussed that the input matrix can be expressed in terms of patterns and instances, and that some combinations are more favourable than others. We need a way to quantize the quality of a description and we do this according to the MDL-principle. 
+
+The Minimum Description Length Principle:
+\begin{itemize}
+\item Is a practical realization of Kolmogorov-complexity, which in itself is shown to be incomputable
+\item Has multiple variants; we use the `crude' or two-part MDL equation
+\item Is an optimization problem that tries to minimize the total length of the description of the input data
+\item It can be shown that the most concise (but loss-less) description of the original data reveals the most information about the data
+\item Finding a minimal loss-less description can be thought of as \emph{compression}, hence `datamining by compression'
+\item This minimization problem usually has a huge search space and therefore most approaches use a greedy heuristic
+\end{itemize}
+
+Two-part MDL splits the description into the \emph{model} and the \emph{data given the model}. Minimizing the sum of their lengths prevents over- and underfitting. \emph{(Explain these terms in the context of our problem)}
+
+\subsubsection{Priors and Encoding}
+
+Apart from finding or approaching the optimal minimal description, the greatest challenge in MDL-based algorithms lies in the fact that we have to devise some kind of encoding scheme to compress the data. We must make this encoding scheme in such way that it can be decoded without loss of information.
+\begin{itemize}
+\item We will not actually encode the data each time, but rather just compute the length if it were encoded
+\item There are multiple ways (\emph{priors}) of assigning code lengths to symbols according to their probability of occurring. \begin{itemize}
+\item If we know the total number of symbols and the distribution is uniform, we use $-\log(p)$. This is the optimal code length accordig to Shannon's entropy. 
+\item For integers on an unknown domain there is the Universal Prior for integers. 
+\item Lastly, we use prequential-plugin code if we do not know the distribution in advance, but want to approach the uniform distribution for large sets of symbols.
+\end{itemize}
+\end{itemize}
+
+
+\end{document}

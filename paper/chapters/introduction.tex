@@ -1,0 +1,49 @@
+\documentclass{llncs}
+\input{"../preamble.tex"}
+\begin{document}
+
+\section{Introduction}
+
+In recent years, an emerging class of algorithms utilizing the \emph{Minimum Description Length (MDL) principle} \cite{rissanenmdl,grunwaldmdl} have become more and more common in the field of explanatory data analysis. Examples of such approaches include the early Krimp \cite{krimp} or the more recent Classy \cite{classy} algorithms. The  MDL principle was first described by Rissanen in 1987 \cite{rissanenmdl} as a practical implementation of Kolmogorov Complexity \cite{kolmogorov}. Central to MDL is the notion that `learning' can be thought of as `finding regularity' and that regularity itself is a property of data that is exploited by \emph{compressing} said data. Therefore by compressing a dataset, we actually learn its structure --- how regular it is, where this regularity occurs, what it looks like --- at the same time. Indeed MDL postulates that the most optimal compression (minimal description) of a given dataset provides the best description of that data. 
+
+The problem that MDL tries to solve first and foremost, is that of \emph{model selection}: given a multitude of explanations (models), select the one that fits the data best. In addition to this, MDL has also been demonstrated to be very effective in materialization of a specific model given the data. In this case, the model is predetermined and we want to find the parameters to fit the data. A similar problem class is solved in pattern mining: here the `parameters' are the discrete building blocks that make up patterns in the data. In fact, the Krimp algorithm mentioned earlier solves a specific subclass of the problem. In this paper we will look at another class of pattern mining problems that is rarely addressed in literature, namely that of spatial structure discovery.
+
+\begin{figure}
+\centering
+\begin{subfigure}[t]{0.33\textwidth}
+\centering
+\includegraphics[scale=.25]{img/Garamond-I.png}
+\caption{$32\times 24$ noise `matrix'}
+\label{fig-example1a}
+\end{subfigure}%
+~
+\begin{subfigure}[t]{0.33\textwidth}
+\centering
+\includegraphics[scale=.25]{img/Garamond-I-highlight.png}
+\caption{Pair $(146,11)$}
+\label{fig-example1b}
+\end{subfigure}%
+~
+\begin{subfigure}[t]{0.33\textwidth}
+\centering
+\includegraphics[scale=.25]{img/Garamond-I-clean.png}
+\caption{Pattern `I' occurs four times.}
+\label{fig-example1c}
+\end{subfigure}%
+\caption{Brief example of spatial pattern mining}
+\end{figure}  
+
+Let us demonstrate the problem of spatial pattern mining by giving a brief example. Figure \ref{fig-example1a} shows a grayscale image that we assume is random `white noise'. For convenience, we will interpret the image as a $32 \times 24$ matrix with values on the interval $[0;255]$. If we were to look at all horizontal pairs of elements, we would find that the pair $(146,11)$ is, among others, statistically more prevalent than the initial assumption of random would suggest. Figure \ref{fig-example1b} highlights the locations where these pairs occur: we have just discovered the first repeating structure in our dataset! If we would continue to try all combinations of elements that `stand out' from the background noise, Figure \ref{fig-example1c} shows that we will eventually find that the matrix contains four copies of the letter `I' set in 16 point Garamond Italic.
+
+The 35 elements that make up a single `I' in the example, are said to form a \emph{pattern}. We can use this pattern to describe the matrix in an other way than `768 unrelated values'. For example, we could describe it as 628 unrelated values plus pattern `I' at locations $(5,4), (11,11), (20,3), (25,10)$, separating the structure from the accidental (noise) data. Since this requires less storage space than before, we have also compressed the original data. See how at the same time we have learned something about the data: we did not know about the `hidden I's before. 
+
+\subsection{Spatial pattern mining}
+
+As the example above very roughly demonstrates, spatial pattern mining is the problem of finding recurring (local) structure in multi-dimensional matrices of data. It is different from graph mining, as a matrix is more rigid and each element has a fixed degree of connectedness/adjacency. It is also unrelated to linear algebra, other then using the term `matrix' and a comparable style of notation. Furthermore in this context, matrix elements can only be discrete, rows and columns have a fixed ordering and the semantics of a value is position-independent.
+
+The problem of spatial pattern mining can roughly be divided into three classes. The first class consists of three subclasses: identical recurring structures in (1a) an otherwise empty (sparse) matrix, (1b) differently distributed noise and (1c) similarly distributed noise. The second class contains the same subclasses but adds that the recurring structures can also be overlaid with noise and are therefore not identical. The third class is also a continuation of the first class and requires that the recurring structures are identical after some optional transformation (such as mirror, inverse, rotate, etc.). These classes also represent an increasing difficulty level and serves as a rough benchmark for the performance of an algorithm.      
+%The example in the previous section belongs to class 1b: the structures are surrounded by noise, but their distribution clearly stands out.
+
+Although we could intuitively solve the example, in reality it is much more complex. Is the `I' the best pattern we can find (and why), are there any more patterns and, most important, how do we find it (quickly) in an unknown and/or much larger dataset? After formally defining these problems and their contexts we will introduce VOUW, a novel spatial pattern mining algorithm based on the MDL principle. 
+ 
+\end{document}

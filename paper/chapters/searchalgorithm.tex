@@ -1,0 +1,32 @@
+\documentclass{llncs}
+\input{"../preamble.tex"}
+\begin{document}
+
+\section{A Search Algorithm}
+
+\emph{I have this partially, but so much has changed that it will need to be rewritten anyway. I would like to split it in two parts: the absolute minimal baseline algorithm in one subsection, and then another to describe all the extensions and optimizations.}\\
+
+\subsection{An Outline}
+
+Given an input matrix, the algorithm is initialized with: (a) probability mass function of the values in the matrix, (b) singleton pattern for each unique element in the matrix and (c) the under-fit instantiation matrix containing only singletons.  The baseline algorithm is composed out of four stages that are repeated every iteration:
+\begin{enumerate}
+\item Candidate search
+\item Gain computation
+\item Candidate selection
+\item Merging of patterns and their instances
+\end{enumerate}
+
+\subsubsection{Candidate Search}
+\subsubsection{Gain Computation}
+\subsubsection{Selecting and Merging Candidates}
+
+\subsection{Extensions and Improvements}
+
+\subsubsection{Pre-processing}
+\subsubsection{Reducing Self-Overlap}
+\subsubsection{Alternative Heuristics}
+\subsubsection{Local Search}
+\subsubsection{Noise-Tolerance}
+
+
+\end{document}
