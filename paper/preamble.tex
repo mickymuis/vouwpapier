@@ -17,6 +17,16 @@
 \usepackage{tikz}
 \usetikzlibrary{trees,automata,positioning}
 \usepackage{booktabs}
+\usepackage{gnuplottex}
+\usepackage{xparse}
+\usepackage{epstopdf}
+% For scaling gnuplottex
+\ExplSyntaxOn
+\DeclareExpandableDocumentCommand{\convertlen}{ O{cm} m }
+ {
+  \dim_to_unit:nn { #2 } { 1 #1 } cm
+ }
+\ExplSyntaxOff
 
 %% For lattice figure
 % Set the overall layout of the tree
