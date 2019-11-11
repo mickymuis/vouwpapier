@@ -4,29 +4,145 @@
 
 \section{A Search Algorithm}
 
-\emph{I have this partially, but so much has changed that it will need to be rewritten anyway. I would like to split it in two parts: the absolute minimal baseline algorithm in one subsection, and then another to describe all the extensions and optimizations.}\\
+Pattern mining problems often yield vast search spaces and geometric pattern mining is no exception. Since we are already looking for an approximate result (by definition of two-part MDL) it makes sense to use a greedy strategy, a heuristic widely used in many MDL-based approaches \cite{krimp,slim,classy}. Another decision we make a priori is that we only find patterns that are \emph{contiguous}: containing only elements that are adjacent to at least one other elements in the same pattern. This decision results in a strong focus on local structure while also dramatically reducing the search space. 
 
-\subsection{An Outline}
+Given these heuristics, an inductive algorithm is devised that is unsurprisingly similar to the lattice shown in Figure \ref{lattice}:  we start with a completely underfit model (the left of the lattice), where there is one instance for each matrix element. On each iteration we want to combine two patterns, resulting in one or more pairs of instances to be merged (one step right in the lattice). We pick the pair of patterns that improve the compression ratio the most and we repeats these steps until no improvements to the compression can be made.
 
-Given an input matrix, the algorithm is initialized with: (a) probability mass function of the values in the matrix, (b) singleton pattern for each unique element in the matrix and (c) the under-fit instantiation matrix containing only singletons.  The baseline algorithm is composed out of four stages that are repeated every iteration:
-\begin{enumerate}
-\item Candidate search
-\item Gain computation
-\item Candidate selection
-\item Merging of patterns and their instances
-\end{enumerate}
+\subsection{Finding candidates}
 
-\subsubsection{Candidate Search}
-\subsubsection{Gain Computation}
-\subsubsection{Selecting and Merging Candidates}
+The first step of the algorithm is to find the `best' \emph{candidate} pair of patterns to merge. Candidates are denoted as a tuple $(X,Y,\delta)$, where $X$ and $Y$ are patterns and $\delta$ the relative offset between them. All possibilities form a vector space that grows easily too large to completely enumerate. Fortunately, we need only pairs of patterns and offsets that actually occur in the instance matrix. This means at each step we can directly enumerate all candidates from the instance matrix and never even look at the original data (remember that we start with an instance matrix that contains exactly the original data).  
 
-\subsection{Extensions and Improvements}
+Still it is not completely trivial to extract candidates from the instance matrix, as one candidate occurs multiple times in `mirrored' configurations, such as $(X,Y,\delta)$ and $(Y,X,-\delta)$, which are equivalent but can still be found separately. Furthermore, we must know which instances can considered as candidates. Due to the restriction of only finding contiguous patterns, many potential candidates cannot be considered by the simple fact that their elements are not adjacent. Lastly there is the problem is self-overlap, which only happens when both patterns in the tuple are equal, i.e. $(X,X,\delta)$. In this case, too many or too few copies may be counted. Think of this by imagining a straight line of five instances of $X$. There are four unique pairs of two $X$'s, but only two can be merged at the same time, in three different ways.
 
-\subsubsection{Pre-processing}
-\subsubsection{Reducing Self-Overlap}
-\subsubsection{Alternative Heuristics}
-\subsubsection{Local Search}
-\subsubsection{Noise-Tolerance}
+
+For each instance $\bar{X}$ we define its \emph{periphery}. The periphery is a set of instances that are positioned in such a way that their union with $\bar{X}$ would give a contiguous pattern. We furthermore split this set into the \emph{anterior-} $\mathrm{ANT}(X)$ and \emph{posterior} $\mathrm{POST}(X)$ peripheries. These contain instances that come before and after $\bar{X}$ in lexicographical order, respectively. This enables us to scan the instance matrix once, in lexicographical order. For each instance $\bar{X}$, we only consider the instances $\mathrm{POST}(\bar{X})$ as candidates. This immediately eliminates possible (mirrored) duplicates. 
+
+
+%OVERLAPY COEFFICIENT WHAHAHAA
+
+When considering candidates of the form $(X,X,\delta)$, we also compute an \emph{overlap coefficient}. This coefficient $c$ is given by the equation $c = (2w+1)\delta_i + \delta_j + w$, where $w$ represents the width of the bounding box around pattern $X$. This equation essentially transforms $\delta$ into a one-dimensional coordinate space of all possible ways that $X$ could be arranged \emph{after} and \emph{adjacent} to itself. For each instance $\bar{X_1}$ a vector of bits $V(c)$ is used to remember if we have already encountered a candidate $(X,X_1,\delta)$ with coefficient $c$, such that we do not count a candidate $(X_1,X,\delta)$ with an equal coefficient. This eliminates the problem of incorrect counting due to self-overlap.
+
+\begin{figure*}[ttt!]
+\begin{minipage}[t]{.49\textwidth}
+	\begin{algorithm}[H]
+	\caption{Candidate search}
+	%\label{alg:cand}
+	\begin{algorithmic}[1]
+	\Require $\bar{H}$
+	\Ensure $C$, ${usage}()$
+	\ForAll{$\bar{X} \in \bar{H}$}
+		\ForAll{$\bar{Y} \in \mathrm{POST}(\bar{X})$}
+			\State $X \gets \ominus(\bar{x}_i), \ Y \gets \ominus(\bar{y})$
+			\State $\delta \gets {index}(\bar{y}) - {index}(\bar{y})$
+			\If{$\bar{X} = \bar{Y}$}
+				\IfContinue{$V(c) = 1$}
+				\State $V(c) \gets 1$
+			\EndIf
+			\State $C \ \cup \ (X,Y,\delta)$
+			\State increment ${usage}(X,Y,\delta)$ by 1
+		\EndFor
+	\EndFor
+	\end{algorithmic}
+	\end{algorithm}%
+\end{minipage}%
+\begin{minipage}[t]{.49\textwidth}
+	\begin{algorithm}[H]
+	\caption{Baseline VOUW}
+	\label{alg:vouw}
+	\begin{algorithmic}[1]
+	\Require $A$
+	\Ensure $A'$
+	\Repeat
+		\State $C \ \gets$ find candidates
+		\State $C_{best} = (X,Y,\delta) \in C : \forall_{c \in C} \ \mathtt{gain}(c) \leq \mathtt{gain}(C_{best})$
+		\Comment Select best candidate
+	\State $\Delta L_{best} = \mathtt{gain}(C_{best})$
+	\If{$\Delta L_{best} > 0 $}
+		\State $Z \gets \ominus(X\oplus(0,0) + (Y\oplus\delta))$
+		\State $h \gets h \cup \{Z\}$
+			\Comment Add the union pattern to the model
+		\ForAll{$\bar{x}_i \in \bar{H} \mid \ominus(\bar{x}_i)=X_{c_{best}}$}
+			\ForAll{$\bar{y} \in \mathtt{adjacent}(\bar{x}_i) \mid \bar{y} = Y_{c_{best}}$}
+				\State $\bar{h} := Z$
+				\State $\bar{y} := \cdot$
+			\EndFor
+		\EndFor
+	\EndIf
+
+	
+	\Until $\Delta L \ < \ 0$
+	\end{algorithmic}
+	\end{algorithm}
+\end{minipage}
+\end{figure*}
+
+\subsection{Gain computation}
+
+After the candidate search we have a set of candidates $C$ and their respective usages in the current instance matrix. The next step is to select the candidate that gives the best \emph{gain}: the improvement in compression of the data. For each candidate $c=(X,Y,\delta)$ the gain $\Delta L(A',c)$  is comprised of two parts: (1) the negative gain of adding the union pattern $Z$ to the model $H$, resulting in $H'$ and (2) the gain of replacing all instances $\bar{X},\bar{Y}$ with relative offset $\delta$ by $Z$ in $\bar{H}$, resulting in $\bar{H}'$. We use the length functions for the model and instance matrix $L_1, L_2$ to derive an equation for gain:
+\begin{align}
+\label{gain}
+\begin{split}
+	\Delta L(c) &= \Big(L_1(H') + L_2(\bar{H}') \Big) - \Big(L_1(H) + L_2(\bar{H}) \Big) \\
+			    &= L_0(|H|) - L_0(|H|+1) - L_p(Z) + \Big(L_2(\bar{H}') - L_2(\bar{H}) \Big)
+\end{split}
+\end{align}
+
+As we can see, the terms with $L_1$ are simplified to $- L_p(Z)$ and the model's length because $L_1$ is simply a summation of individual pattern lengths. The equation of $L_2$ requires the recomputation of the entire instance matrix' length, which is expensive considering we need to perform it for \emph{every candidate}, \emph{every iteration}. However, we can rework the function $L_{pp}$ in Equation (\ref{pp}) by observing that we can isolate the logarithms and generalize them into:
+\begin{align}
+	\log_G(a,b) = \log \frac{\Gamma(a+ b\epsilon)}{\Gamma(b\epsilon)} = \log \Gamma(a+ b\epsilon) - \log \Gamma(b\epsilon)
+\end{align} 
+
+\noindent Which can be used to rework the second part of Equation (\ref{gain}) in such way that the gain equation can be computed in constant time complexity.
+
+\begin{align}
+\begin{split}
+	L_2(\bar{H}') - L_2(\bar{H}) = &\log_G(U(X),1) + \log_G(U(Y),1) \\
+			      &- \log_G(U(X)-U(Z),1) - \log_G(U(Y)-U(Z),1) \\
+			      &- \log_G(U(Z),1) + \log_G(|\bar{H}|,|H|) - \log_G(|\bar{H'}|,|H'|) \\
+%			    = &\log \Gamma(U(X)+\epsilon) - \log \Gamma(\epsilon) + \log \Gamma(U(Y)+\epsilon) - \log \Gamma(\epsilon) - \log \Gamma(U(X)+U(Z)+\epsilon) + \log \Gamma(\epsilon) - \log \Gamma(U(Y)+U(Z)+\epsilon) + \log \Gamma(\epsilon) - \log \Gamma(U(Z)+\epsilon) + \log \Gamma(\epsilon) + \log \Gamma(|\bar{H}|+|H|\epsilon) - \log \Gamma(|H|\epsilon) - \log \Gamma(|\bar{H'}|+|H'|\epsilon) + \log \Gamma(|H'|\epsilon) \\
+%			    = &\log \Gamma(U(X)+\epsilon) + \log \Gamma(U(Y)+\epsilon) - \log \Gamma(U(X)+U(Z)+\epsilon) - \log \Gamma(U(Y)+U(Z)+\epsilon) - \log \Gamma(U(Z)+\epsilon) + \log \Gamma(\epsilon) + \log \Gamma(|\bar{H}|+|H|\epsilon) - \log \Gamma(|H|\epsilon) - \log \Gamma(|\bar{H'}|+|H'|\epsilon) + \log \Gamma(|H'|\epsilon)			    
+\end{split}   
+\end{align}
+
+\noindent Notice that in some cases the usages of $X$ and $Y$ equal that of $Z$, which means additional gain is created by removing $X$ and $Y$ from the model. 
+
+\subsection{Mining patterns}
+
+Finding candidates and computing gain for these candidates, is the first part of the algorithm. In the second part we select the candidate $(X,Y,\delta)$ with the best gain and merge $X$ and $Y$ to form $Z$, as explained in Section \ref{constructpatterns}. Instances $\bar{X}$ and $\bar{Y}$ with offset $\delta$ must now be replaced by instances of $Z$. First the instance matrix $\bar{H}$ is linearly traversed to find all occurrences of $\bar{X}$ and $\bar{Y}$ with offset $\delta$. Recall that we constructed candidate $(X,Y,\delta)$ by looking in the posterior periphery of all $\bar{X}$ to find $Y$ and $\delta$, which means that $Y$ always comes after $X$ in lexicographical order. The pivot of a pattern is the first element in lexicographical order, therefore $\mathrm{pivot}(Z) = \mathrm{pivot}(X)$. This means that we can replace all matching $\bar{X}$ with an instance of $Z$ and all matching $\bar{Y}$ with $\cdot$. 
+
+This concludes the baseline version of the algorithm, which is listed in Algorithm \ref{alg:vouw}. 
+
+\subsection{Local search}
+
+Given that some pattern $X$ is found in a given matrix, the baseline algorithm could have arrived to $X$ in different ways. Exploring these combinatorics can tell us how efficiently the algorithm arrives at $X$. By definition we know that the fundamental operation is to combine exactly two patterns into a new pattern on each step. Given this, the number of steps in which $X$ can be constructed lies between $\log_2|X|$ and $|X|-1$. 
+
+%Informally we can say that the algorithm searches for `as few and as large as possible patterns', because it tries to minimize the size of the model as well as that of the instance matrix at the same time. This means that it will try to generate pattern $X$ by adding small elements to a incrementally growing pattern, resulting in a behaviour that approaches $|X|-1$ steps. This is in contrast to a hypothetical divide-and-conquer strategy that would first generate parts of $X$ that are of sizes $2, 4, 8,$ etc, resulting in $\log_2|X|$ steps.
+
+To improve efficiency on large patterns without sacrificing the objectivity of the original heuristics, the algorithm is augmented with an additional local search. We call this local search \emph{flood fill} because it is similar to the image algorithm with the same name. It is a result of the observation that the algorithm generates a large pattern $X$ by adding small elements to a incrementally growing pattern, resulting in a behaviour that approaches $|X|-1$ steps. Instead of taking all $|X|-1$ steps to arrive at $X$, we can try to predict which elements will be added to $X$ and merge them directly. Given that we selected candidate $(X,Y,\delta)$ and merged $X$ and $Y$ into $Z$, now for all $m$ resulting instances $z_i \in {z_0,\dots,z_{m-1}}$ we try to find $W$ such that:
+\begin{align}
+\exists w \in \mathrm{POST}(z_i) \iff 
+\end{align}
+
+
+
+%By doing a breadth-first-search in the periphery of all newly created instances after the last step of the algorithm. 
+
+
+
+%Given an input matrix, the algorithm is initialized with: (a) probability mass function of the values in the matrix, (b) singleton pattern for each unique element in the matrix and (c) the under-fit instantiation matrix containing only singletons.  The baseline algorithm is composed out of four stages that are repeated every iteration:
+%\begin{enumerate}
+%\item Candidate search
+%\item Gain computation
+%\item Candidate selection
+%\item Merging of patterns and their instances
+%\end{enumerate}
+
+%\subsection{Extensions and Improvements}
+%\subsubsection{Pre-processing}
+%\subsubsection{Reducing Self-Overlap}
+%\subsubsection{Alternative Heuristics}
+%\subsubsection{Local Search}
+%\subsubsection{Noise-Tolerance}
 
 
 \end{document}

@@ -1,13 +1,28 @@
 \usepackage[utf8]{inputenc}
+\usepackage{verbatim}
+\usepackage{multicol}
 \usepackage{llncsdoc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{lmodern}
+\usepackage{calc}
 \usepackage{algpseudocode}
 \usepackage{algorithm}
 \usepackage{algorithmicx}
+
+\algsetblockdefx[IfContinue]{IfContinue}{IfContinue}
+{0}{0pt}
+[0]{}
+[1]{\textbf{if} #1 \textbf{then continue}}
+
+\algrenewcommand\algorithmicrequire{%
+  \makebox[\widthof{\textbf{Output:}}][l]{\textbf{Input:}}}
+  
+ \algrenewcommand\algorithmicensure{%
+  \textbf{Output:}}
+
 \usepackage{color}
 \usepackage{gnuplottex}
 \usepackage{subcaption}
