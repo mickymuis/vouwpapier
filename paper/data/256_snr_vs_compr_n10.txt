@@ -1,0 +1,17 @@
+#../build/ril -rw=256 -rh=256 -rr=.05 -ru=10:20 -rs=10:50 -n10 -e > snr_test_256.txt
+# ../build/ril -rw=256 -rh=256 -rr=.1 -ru=10:20 -rs=10:50 -n10 -e >> snr_test_256.txt
+# ../build/ril -rw=256 -rh=256 -rr=.2 -ru=10:20 -rs=10:50 -n10 -e >> snr_test_256.txt
+# ../build/ril -rw=256 -rh=256 -rr=.3 -ru=10:20 -rs=10:50 -n10 -e >> snr_test_256.txt
+# ../build/ril -rw=256 -rh=256 -rr=.4 -ru=10:20 -rs=10:50 -n10 -e >> snr_test_256.txt
+# ../build/ril -rw=256 -rh=256 -rr=.5 -ru=10:20 -rs=10:50 -n10 -e >> snr_test_256.txt
+# ../build/ril -rw=256 -rh=256 -rr=.6 -ru=10:50 -rs=10:50 -n10 -e >> snr_test_256.txt
+# ../build/ril -rw=256 -rh=256 -rr=.7 -ru=10:100 -rs=10:50 -n10 -e >> snr_test_256.txt
+
+.05 0.956523
+.1  0.918715
+.2  0.853265
+.3  0.778931
+.4  0.710528
+.5  0.634092
+.6  0.525677
+.7  0.423803
