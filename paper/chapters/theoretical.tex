@@ -40,12 +40,12 @@ One element in each pattern is given the special function of \textbf{pivot}: %
 $pivot(X)$ of pattern $X$ is the first non-empty element of $X$ in the first non-empty column of the first (non-empty) row of $X$.
 %\end{definition}
 \noindent
-A pivot can be thought of as a fixed point in a pattern $X$ which we can use to position its elements in relation to $A$. The precise translation we apply to a particular pattern we call an \textbf{offset}. An offset is a tuple $\delta=(i,j)$ that is on the same domain as an index in $A$. We realize this translation by placing all elements of $X$ on an empty $M\times X$ size matrix in such way that the pivot element is at $(i,j)$. We formalize this concept with the \textbf{instantiation operator} $\otimes$:
+A pivot can be thought of as a fixed point in a pattern $X$ which we can use to position its elements in relation to $A$. The precise translation we apply to a particular pattern we call an \textbf{offset}. An offset is a tuple ${q}=(i,j)$ that is on the same domain as an index in $A$. We realize this translation by placing all elements of $X$ on an empty $M\times X$ size matrix in such way that the pivot element is at $(i,j)$. We formalize this concept with the \textbf{instantiation operator} $\otimes$:
 
 \smallskip
 \noindent $\triangleright$
 %\begin{definition}
-\emph{In the context of an $M\times N$ matrix $A$, we define the \textbf{instance} $X \otimes \delta$ as the incomplete $M\times N$ matrix containing all elements of $X$ such that $\mathrm{pivot}(X)$ is at index $(i,j)$ and the distances between all original elements are preserved. The resulting matrix contains no additional non-empty elements. } %
+\emph{In the context of an $M\times N$ matrix $A$, we define the \textbf{instance} $X \otimes {q}$ as the incomplete $M\times N$ matrix containing all elements of $X$ such that $\mathrm{pivot}(X)$ is at index $(i,j)$ and the distances between all original elements are preserved. The resulting matrix contains no additional non-empty elements. } %
 %\end{definition}
 \smallskip
 
@@ -55,11 +55,11 @@ Obviously this does not yield a valid result for an arbitrary offset $(i,j)$. We
 \smallskip
 %\begin{definition}
 \noindent $\triangleright$
-\emph{Two pattern instances $X \otimes \delta_x$ and $Y \otimes \delta_y$, with $\delta_x \neq \delta_y$ are \textbf{non-overlapping} if $|(X \otimes \delta_x) + (Y \otimes \delta_y)| = |X|+|Y|$.}
+\emph{Two pattern instances $X \otimes {q}$ and $Y \otimes {r}$, with ${q} \neq {r}$ are \textbf{non-overlapping} if $|(X \otimes {q}) + (Y \otimes {r})| = |X|+|Y|$.}
 %\end{definition}
 \smallskip
 
-From here on we will use the same letter in lower case to denote an arbitrary instance of a pattern, e.g. $x = X \otimes \delta$ when the exact value of $\delta$ is unimportant.
+From here on we will use the same letter in lower case to denote an arbitrary instance of a pattern, e.g. $x = X \otimes {q}$ when the exact value of ${q}$ is unimportant.
 
 Given a set of patterns $H$ over $A$, we would like to have a set of `instructions' of where instances of each pattern should be positioned in order to obtain $A$. When looking at the example in Figure \ref{example1}, this mapping has the shape of an $M\times N$ matrix.
 
@@ -79,7 +79,7 @@ The above definition creates the interesting proposition that the offset to each
 
 In the previous subsections we silently omitted an important constraint in instantiating patterns. An instance has only meaning in the context of matrix $A$ if their respective elements match. In order words, if an instance $X \otimes (i,j)$ has all its non-empty elements identical to the corresponding indices in $A$, this means that pattern $X$ matches $A$ in $(i,j)$. In this case the match is exact, formally
 \begin{definition}
-The instance ${x}=X \otimes \delta$ is an \textbf{exact match on $A$} if for all non-empty ${x}_{i,j} \in {x}$ it holds that ${x}_{i,j} = a_{i,j}$.
+The instance ${x}=X \otimes {q}$ is an \textbf{exact match on $A$} if for all non-empty ${x}_{i,j} \in {x}$ it holds that ${x}_{i,j} = a_{i,j}$.
 \end{definition}
 
 While this form of straightforward matching can be desirable in some cases, it may lead to a bloated model in others. Take the example from Figure \ref{example3} that lists matrix $A$ and four patterns. Pattern $W$ is obviously an exact match to five of the six elements of $A$. Pattern $X$, while not an exact match, is also a good candidate to describe $A$ although it is multiplied by a constant factor of two. Pattern $Y$ is a near-exact match: only one element is off - this could be due to noise for example. Pattern $Z$ is no match for the values in $A$, but notice that it is identical in structure to the other patterns: it places as many values at the same indices. 
@@ -108,7 +108,7 @@ One possibility for solving this problem is to let the MDL equation decide wheth
 
 \subsection{The Problem and its Solution Space}
 
-\subsubsection{Constructing Patterns.}
+\subsubsection{Constructing Patterns}
 \label{constructpatterns}
 Patterns can be joined to create increasingly large patterns and, as we will later see, this concept forms the basis of the search algorithm. However, two patterns could be joined in any different number of ways. We can define the exact way two patterns should be joined by enumerating the distance of their respective pivots. We use pattern instances as an intermediate step.
 
@@ -117,7 +117,7 @@ Recall that instances are simply patterns projected on an $M\times N$ matrix, co
 \smallskip
 \noindent $\triangleright$
 %\begin{definition}
-\emph{Let $X \otimes \delta$ be an instance of $X$, then by definition we say that $\oslash(X \otimes \delta) = X$.}
+\emph{Let $X \otimes {q}$ be an instance of $X$, then by definition we say that $\oslash(X \otimes {q}) = X$.}
 %\end{definition}
 \smallskip
 
@@ -130,13 +130,13 @@ We can now define a sum on two instances to get a new instance that combines bot
 \end{figure}
 
 \begin{theorem}\label{fundamental}
-Given two non-overlapping instances ${x}=X\otimes \delta_X$ and ${y}=Y\otimes \delta_Y$, the sum of the matrices ${x} + {y}$ is another instance. We observe that pattern $Z=\oslash({x} + {y})$ such that ${x} + {y} = Z\otimes \delta_X$.
+Given two non-overlapping instances ${x}=X\otimes {q}$ and ${y}=Y\otimes {r}$, the sum of the matrices ${x} + {y}$ is another instance. We observe that pattern $Z=\oslash({x} + {y})$ such that ${x} + {y} = Z\otimes {q}$.
 \end{theorem}
 
 Notice that this sum has the limitation that two instances can only be summed if they do not overlap. While this is a serious limitation, we will show in the next subsection that it is not of any practical relevance.
 
 
-\subsubsection{The Sets $\mathcal{H}_A$ and $\mathcal{I}_A$.}\label{thesetH}
+\subsubsection{The Sets $\mathcal{H}_A$ and $\mathcal{I}_A$}\label{thesetH}
 
 %In the previous subsections we have given a means to describe a matrix $A$ in a different way, namely by means of patterns and instances. If we succeed in describing $A$, using our notation, in a more concise way than just $A$ itself, we have learned something about the local and global structure of $A$ and perhaps even about anomalies or noisy values. In this context, we see a clear relation the MDL principle and learning. 
 %In order to find a short(er) description, we will first have to define our search space and the way solutions are to be constructed. 
@@ -154,17 +154,16 @@ Using $H_A^0$ and ${I}_A^0$ as base cases we can now inductively define the set 
 
 In this definition of ${I}_A^0$ we inductively replace two instances with their sum. Indeed we can add any two instances together in any order and eventually this results in just one big instance that is equal to $A$. The elegance in this is that, by this inductive definition, the instances never overlap and thus their sum is always a valid instance on $A$. Note that when we take two elements ${I}_{i,j},{I}_{k,l} \in {I}$ we force $(i,j)\leq(k,l)$ to be in lexicographical order, not only to eliminate different routes to the same instance matrix, but also such that the pivot of the new pattern coincides with ${I}_{i,j}$. We can then leave ${I}_{k,l}$ empty.
 
-The construction of instantiation matrices also implicitly defines the corresponding models. While this may seem odd --- defining models for instantiations instead of the other way around --- note that there is no unambiguous way to find an instantiation matrix for a given model\footnote{Notice that this is a problem for any real-world implementation. We will describe a heuristic to derive instantiation matrices from model and data in the next section.}. Instead we find the following trivial definition by applying the inductive construction rule above:
-
-\smallskip
+The construction of instantiation matrices also implicitly defines the corresponding models. While this may seem odd --- defining models for instantiations instead of the other way around --- note that there is no unambiguous way to find an instantiation matrix for a given model. Instead we find the following trivial definition by applying the inductive construction rule above:
+% \footnote{Notice that this is a problem for any real-world implementation. We will describe a heuristic to derive instantiation matrices from model and data in the next section.}.
+%
 %\noindent $\triangleright$
 %\begin{definition}
 %\emph{The set $\mathcal{H}_A$ of all models over $A$ is given by:}
-$$
+\begin{align*}
 \mathcal{H}_A=\big\{\{\oslash({I}) \ | \ {I} \in {I} \} \ \big | \ {I} \in \mathcal{I}_A \big\}.
-$$ 
+\end{align*}
 %\end{definition}
-\smallskip
 
 So for any instantiation ${I}\in \mathcal{I}_A$ there is a corresponding set in $\mathcal{H}_A$ of all patterns that occur in ${I}$. This results in an interesting symbiosis between model and instantiation: increasing the complexity of one decreases that of the other. When plotting this construction a tightly connected lattice appears such as that of Figure \ref{lattice}. 
 %\begin{theorem}
@@ -176,18 +175,21 @@ So for any instantiation ${I}\in \mathcal{I}_A$ there is a corresponding set in 
 \label{lattice}
 \end{figure}
 
-\subsubsection{The Optimal Model.}
+%\subsubsection{The Optimal Model}
 
-The final step in the process of describing $A$ is to select the `best' or `most optimal' model from the set of $\mathcal{H}_A$. While intuitively we can understand that not every model we pick is equally fitting in terms of how well it describes $A$, this concepts needs to be formalized before we can even begin to search $\mathcal{H}_A$. To this end we make the connection with the MDL principle that says, informally, that the most concise encoding of the data gives us the best description. Since we are using two-part MDL, it is very convenient that we have already split the problem into two parts:  a model $H_A$ and an instantiation ${I}_A$. Together they form $A'$ and according to MDL, their sum must be minimized. The two-part MDL equation looks like:
-$$
-L_1(H_A) + L_2(A|H_A)
-$$
-Here the functions $L_1, L_2$ are two independent length functions that make up the coding scheme for two-part MDL. This minimization is often thought of as compression, although we will not actually write any encoded data. This leaves us with the task of finding an encoding scheme that encodes both model and instantiations lossless and without redundancy.
+%The final step in the process of describing $A$ is to select the `best' or `most optimal' model from the set of $\mathcal{H}_A$. While intuitively we can understand that not every model we pick is equally fitting in terms of how well it describes $A$, this concepts needs to be formalized before we can even begin to search $\mathcal{H}_A$. To this end we make the connection with the MDL principle that says, informally, that the most concise encoding of the data gives us the best description. Since we are using two-part MDL, it is very convenient that we have already split the problem into two parts:  a model $H_A$ and an instantiation ${I}_A$. Together they form $A'$ and according to MDL, their sum must be minimized. The two-part MDL equation is given by:
+%$$
+%L_1(H_A) + L_2(A|H_A)
+%$$
+%Here the functions $L_1, L_2$ are two independent length functions that make up the coding scheme for two-part MDL. This minimization is often thought of as compression, although we will not actually write any encoded data. This leaves us with the task of finding an encoding scheme that encodes both model and instantiations lossless and without redundancy.
 
 %Say we have some set of code words $\{C_0,C_1,\dots,C_n\}$. These symbols could be for example be a code word for each pattern $X_0, X_1,\dots,X_n$ in a model. We now want to find optimal lengths $l_0,l_1,\dots,l_n$ to assign to each code word using the Kraft-inequality such that holds that $\displaystyle\sum^N_{i=0}r^{-l_i} \leq 1$. In this case we say that $r=2$ (symbols 0 and 1), so we can measure code lengths in bits. 
 %The Kraft-inequality gives us a bijection between code lengths and probability distributions. This is one of the main ideas of Shannon's entropy, which plays also an important role in the MDL principle. In our example we can write a probability distribution $P(X)$ for $X \in H_A$, as the probability of pattern $X$ occurring in our instance set. Given these probabilities we can use $l_i=-\log(P(X_i))$ to compute the exact number of bits a pattern should optimally be encoded with\footnote{Notice how common code words are shorter then rarely used code words. According to the Kraft inequality this gives us an optimal code. The number of bits we compute are real numbers and not integers. While this does certainly not result in a practical encoding, for the purpose of model selection we do not actually need to encode the data as we are only interested in its hypothetical length.}.
 
 \subsection{Encoding Models and Instantiations}
+
+From all parametrized models in $\mathcal{H}_A$ we want to select (approximate) the model that describes $A$ best. We use two-part MDL to quantify how well a given model and instantiation matrix fit $A$. Two-part MDL tells us to minimize the sum of $L_1(H_A) + L_2(A|H_A)$, two functions that give the length of the model and the length of `the data given the model', respectively. In this context, the model is the set of patterns $H_A$ and the data given the model is the accidental information needed to reconstruct the data from $H_A$ --- which in this case is the instantiation matrix.
+
 To be able to compute the length of a given code word we must know the probability of that word occurring in our data. This information must also be available to the hypothetical decoder as otherwise the encoding is not lossless. Sometimes this is not practical as we do not know the probability distribution beforehand. For example, given an arbitrary encoded $A'$, we do not know the probability that each pattern occurs in the instantiation matrix. We could also encode this information and pass it to the decoder separately, but this is generally a bad idea. It cannot be stressed enough that the leanest encoding gives us the most information about the true compression ratio we achieve, while bookkeeping and meta-information only incur an undue bias. 
 
 Instead of using the optimal distribution $L(p)=-\log(p)$ we can also use a different distribution, as long as the encoder and hypothetical decoder agree upon which distribution is used. Such distribution is often called a \textbf{prior} and is used to fix `prior knowledge' that does not have to be encoded explicitly. Although the optimal distribution can only be approached, it is sometimes a justifiable trade-off if it means that we do not have to encode uninteresting information.  
@@ -195,26 +197,28 @@ Instead of using the optimal distribution $L(p)=-\log(p)$ we can also use a diff
 A good example of a prior that we will be using is the universal code for integers \cite{integerprior}. The corresponding length function $L_{\mathbb{N}}(n)$ gives the number of bits required to encode an arbitrary $n$ and is defined as $L_{\mathbb{N}}(n) = \log*(n) + \log(c_0)$ with $\log*(n) = \log(n) + \log \log(n) + \cdots$ and $c_0=2.865064$ to satisfy the Kraft-inequality. This code is obviously not uniform and assigns a longer code to a larger $n$. We will use this code to encode arbitrary integers.
 
 To encode the instantiation matrix we will use the \textbf{prequential plug-in code} \cite{ppcode}. The prequential plug-in code is defined for sequences of one item at a time and updates the probability of each item as it is encoded, such that the probability need not be known in advance. It has the favourable property of being asymptotically equal to the optimal code for large sequences. Say we want to encode all elements ${I}_i \in {I}$ lexicographical order, we define:
-\begin{definition}\label{plugin}
-$$
+%\begin{definition}
+\label{plugin}
+\begin{align*}
 P_{plugin}( y_i = {I}_i \mid y^{i-1} ) = \frac{|\{y \in y^{i-1} \mid y = {I}_i\}| + \epsilon }{\sum_{X \in H}|\{y \in y^{i-1} \mid y = X\}| + \epsilon}
-$$
-\end{definition}
+\end{align*}
+%\end{definition}
 Here $y_i$ is the i-th element to be encoded and $y^{i-1}$ is the sequence of elements encoded so far. We initialize the base case (no element has been sent yet) with a pseudocount $\epsilon$, which gives $P_{plugin}( y_1 = {I} \mid y^{0} ) = \frac{\epsilon}{\epsilon|H|}$. We pick $\epsilon=0.5$ as it is used generally with good results.
 
 Let us adapt this principle to the problem of encoding patterns. The first step here is to determine the probability that each unique element (instance of a pattern) in ${I}$ occurs. 
 
-\begin{definition}\label{usage}
-Given a set of instantiations ${I}$, we define $U(X)$ as the \textbf{usage} of pattern $X$ such that
-$$
-	U(X) = |\{ {I}_i \in {I} \mid {I}_i = X\}|.
-$$
-\end{definition}
+%\begin{definition}
+\label{usage}
+\smallskip \noindent $\triangleright$
+\emph{Given a set of instantiations ${I}$, we define $U(X)$ as the \textbf{usage} of pattern $X$ such that $U(X) = |\{ {I}_i \in {I} \mid {I}_i = X\}|.$}
+\smallskip
+%\end{definition}
 
-From this definition we see that the \textbf{usage} of a pattern is a sum of how often it occurs as an instance. We can use this function to simplify things a little by realizing that we actually know the precise number of instances per pattern on the side of the decoder, but not as the decoder. This information can be used to slightly rephrase Definition \ref{plugin} to be able to encode items in arbitrary order. This produces the length function of the instantiation matrix ${I}$ as follows\footnote{Here we use the fact that we can interchange sums of logarithms with logarithms of products and that those terms can be moved around freely. Moreover we convert the real-valued product sequences to the Gamma function $\Gamma$, which is the factorial function extended to real and complex numbers such that $\Gamma(n) = (n-1)!$.}:
+From this definition we see that the \textbf{usage} of a pattern is a sum of how often it occurs as an instance. We can use this function to simplify things a little by realizing that we actually know the precise number of instances per pattern on the side of the decoder, but not as the decoder. This information can be used to slightly rephrase Definition \ref{plugin} to be able to encode items in arbitrary order. This produces the length function of the instantiation matrix ${I}$ as follows:
+%\footnote{Here we use the fact that we can interchange sums of logarithms with logarithms of products and that those terms can be moved around freely. Moreover we convert the real-valued product sequences to the Gamma function $\Gamma$, which is the factorial function extended to real and complex numbers such that $\Gamma(n) = (n-1)!$.}:
 \begin{align*}
 	L_{pp}({I}\mid P_{plugin}) &= \sum^{|{I}|}_{i=1} -\log \frac{|\{y \in y^{i-1} \mid y = {I}_i\}| + \epsilon }{\sum_{X \in H}|\{y \in y^{i-1} \mid y = X\}| + \epsilon}\\
-	&= \sum^{|H|}_{X_i \in h} -\log \prod^{U(X_i)-1}_{j=0} \frac{j+\epsilon}{\sum^{i-1}_{k=1} U(X_k)+j+\epsilon|H|} \\
+%	&= \sum^{|H|}_{X_i \in h} -\log \prod^{U(X_i)-1}_{j=0} \frac{j+\epsilon}{\sum^{i-1}_{k=1} U(X_k)+j+\epsilon|H|} \\
 	&= -\log \frac{\prod^{X_i\in H} \prod^{U(X_i)}_{j=0} j + \epsilon}{\prod^{|{I}|-1}_{j=0} j + \epsilon|H|} \\
 	&= -\sum^{|H|}_{X_i \in h} \left[ \log \frac{\Gamma(U(X_i)+\epsilon)}{\Gamma(\epsilon)}\right] + \log \frac{\Gamma(|{I}| + \epsilon|H|)}{\Gamma(\epsilon|H|)}
 \end{align*}
