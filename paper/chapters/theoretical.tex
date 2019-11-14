@@ -8,30 +8,31 @@
 
 %In this subsection we will introduce a method for describing and decomposing tabular or matrix-like data. It is this concise notation that allows us to reason about what one can and cannot expect to find from a set of data and what this data could look like. In later subsections we will use these tools to gradually connect to the MDL principle and finally to a practical search algorithm.
 
-We define spatial pattern mining on bounded, discrete and two-dimensional geometric data. We represent this data as an $M\times N$ matrix $A$ whose rows and columns are finite and in a fixed ordering (i.e. reordering rows and columns semantically alters the matrix). Elements $a_{i,j}$, where row $i$ is on $[0;N)$ and column $j$ is on $[0;M)$, holds that $a_{i,j} \in S$, the finite set of symbols occurring in $A$. %We will denote $A$ as a matrix because of the convenience of the linear algebra notation\footnote{In any practical application however, $A$ will not represent a system of linear equations but rather hold some form of sampled data that can be placed on a grid.}
+We define geometric pattern mining on bounded, discrete and two-dimensional raster-based data. We represent this data as an $M\times N$ matrix $A$ whose rows and columns are finite and in a fixed ordering (i.e. reordering rows and columns semantically alters the matrix). Elements $a_{i,j}$, where row $i$ is on $[0;N)$ and column $j$ is on $[0;M)$, holds that $a_{i,j} \in S$, the finite set of symbols occurring in $A$. %We will denote $A$ as a matrix because of the convenience of the linear algebra notation\footnote{In any practical application however, $A$ will not represent a system of linear equations but rather hold some form of sampled data that can be placed on a grid.}
 
 \begin{figure}
 \input{"figures/decomposition_example.tex"}
 \label{example1}
 \end{figure}
 
-MDL tells us to search for the shortest (optimal) description of $A$. This description then tells us everything there is to know about $A$ in the most succinct way possible. The principle behind MDL is that we can approximate an optimal description through the compression of the original data. This optimal description, let us call it $A'$, is only optimal if we can unambiguously reconstruct $A$ from it and nothing more --- the compression is both minimal and `lossless'. Intuitively compression means that we would like to have a way to just define $A$ using as few building blocks as possible. We illustrate this using the example in Figure \ref{example1}. Given the matrix $A$ we try to decompose it in recurring substructures which we will call \textbf{patterns}, denoted $X$ and $Y$ in the example. At any given time, the set of patterns which we call the \textbf{model} of a $A$, is denoted $H_A$. Given only these patterns, $A$ cannot be reconstructed because we need a mapping from the model $H_A$ back to $A$. This mapping represents in what MDL calls the \textbf{matrix $A$ given the model $H_A$}. In statistics this is often the structural versus the accidental information, but in this context we think of it merely as `instructions' of how to reconstruct $A$. Let us call the set of all instructions required to rebuild $A$ from $H_A$ the \textbf{instantiation} of $H_A$. It is denoted by ${I}_A$ in the example. Notice how this instantiation essentially tells us where in $A$ each pattern from $H_A$ was originally located.  The result is a notation that allows us to express matrix $A$ as if decomposed into sets of local and global spatial information.
-
-Now that we have this top-down concept of the decomposition of $A$, we will continue to describe its constituents in more detail.
+MDL tells us that the shortest (optimal) description of $A$ tells us everything there is to know about $A$ in the most succinct way possible. We approximate this optimal description through the compression of the original data. This optimal description, let us call it $A'$, is only optimal if we can unambiguously reconstruct $A$ from it and nothing more --- the compression is both minimal and `lossless'. Intuitively compression means that we would like to have a way to just define $A$ using as few building blocks as possible. We illustrate this using the example in Figure \ref{example1}. Given the matrix $A$ we try to decompose it in patterns, denoted $X$ and $Y$ in the example. At any given time, the set of patterns which we call the \textbf{model} of a $A$, is denoted $H_A$. Given only these patterns, $A$ cannot be reconstructed because we need a mapping from the model $H_A$ back to $A$. This mapping represents in what MDL calls the \textbf{matrix $A$ given the model $H_A$}. In statistics this is often the structural versus the accidental information, but in this context we think of it merely as `instructions' of how to reconstruct $A$. Let us call the set of all instructions required to rebuild $A$ from $H_A$ the \textbf{instantiation} of $H_A$. It is denoted by ${I}_A$ in the example. Notice how this instantiation essentially tells us where in $A$ each pattern from $H_A$ was originally located.  The result is a notation that allows us to express matrix $A$ as if decomposed into sets of local and global spatial information, which we will now describe in more detail.
 
 %We call a specific set of patterns $H\in \mathcal{H}_A$ a \textbf{point hypothesis} and analogously a specific instantiation is denoted ${I} \in \mathcal{I}_A$. Formally, a complete description $A'$ of $A$ is a combination of some $H$ and ${I}$ such that ${I}$ is a 1-to-1 mapping from $H_A$ to $A$. In the next subsections we will formalize these concepts by starting bottom-up with patterns and instances up to models, instantiation matrices and their link with MDL. After this we will discuss how we propose to find a good description of $A$ by means of the VOUW algorithm.
 
 
 \subsection{Patterns and Instances}
-We can define a pattern as a submatrix $X$ of the original matrix $A$. This submatrix is not necessarily complete (elements may be $\cdot$, the empty element), which gives us the ability to precisely cut-out any irregular-shaped part of $A$. We additionally require the elements of $X$ to be adjacent (horizontal, vertical or diagonal) to at least one non-empty element. While this limits the amount of possible patterns somewhat, it will later on also reduce the computational effort dramatically. We will now define a pattern to be the smallest submatrix to completely contain all elements of $X$.
+\noindent $\triangleright$ \emph{We define a \textbf{pattern} as a $M_X\times N_X$ submatrix $X$ of the original matrix $A$. This submatrix is not necessarily complete (elements may be $\cdot$, the empty element), which gives us the ability to precisely cut-out any irregular-shaped part of $A$. We additionally require the elements of $X$ to be adjacent (horizontal, vertical or diagonal) to at least one non-empty element.}
+%While this limits the amount of possible patterns somewhat, it will later on also reduce the computational effort dramatically.
+%We will now define a pattern to be the smallest submatrix to completely contain all elements of $X$.
 
 %\begin{definition}
-%We define \textbf{pattern} $X$ as an $M_X\times N_X$ submatrix of $A$ where any non-empty element may %optionally be replaced by $\cdot$ such that:
+%A \textbf{pattern} $X$ is a $M_X\times N_X$ submatrix of $A$ where any non-empty element may %optionally be replaced by $\cdot$ such that:
 %\begin{itemize}
 %\item Any non-empty element in $X$ is adjacent (horizontal, vertical or diagonal) to at least one other non-%empty element.
 %\item The first and last rows and columns contain at least one non-empty element.
 %\end{itemize}
 %\end{definition}
+\smallskip
 
 From this definition we see that the dimensions $M_X\times N_X$ give essentially the smallest rectangle around $X$ (the \emph{bounding box)}. As a more useful measure we therefore also define the cardinality $|X|$ of $X$ as the number of non-empty elements. We call a pattern $X$ with $|X|=1$ a \textbf{singleton pattern}, i.e. a pattern containing exactly one element of $A$. %\footnote{We will often slightly abuse notation by using single-index elements or using set notation for any matrix. For instance, when we write $x_i \in X$, we mean that $x_i$ is the $i$-th non-empty element in $X$ with $1\leq i \leq |X|$. By convention we will always use row-major ordering in these cases.}
 
@@ -160,9 +161,9 @@ The construction of instantiation matrices also implicitly defines the correspon
 %\noindent $\triangleright$
 %\begin{definition}
 %\emph{The set $\mathcal{H}_A$ of all models over $A$ is given by:}
-\begin{align*}
+\begin{align}
 \mathcal{H}_A=\big\{\{\oslash({I}) \ | \ {I} \in {I} \} \ \big | \ {I} \in \mathcal{I}_A \big\}.
-\end{align*}
+\end{align}
 %\end{definition}
 
 So for any instantiation ${I}\in \mathcal{I}_A$ there is a corresponding set in $\mathcal{H}_A$ of all patterns that occur in ${I}$. This results in an interesting symbiosis between model and instantiation: increasing the complexity of one decreases that of the other. When plotting this construction a tightly connected lattice appears such as that of Figure \ref{lattice}. 
@@ -201,9 +202,9 @@ The fictional encoder sequentially sends each symbol in the datastream (either p
 To encode the instance matrix we will use the \textbf{prequential plug-in code} \cite{ppcode}. The prequential plug-in code is defined for sequences of one item at a time and updates the probability of each item as it is encoded, such that the probability need not be known in advance. It has the favorable property of being asymptotically equal to the optimal code for large sequences. Say we want to encode all elements ${I}_i \in {I}$, we define:
 %\begin{definition}
 \label{plugin}
-\begin{align*}
+\begin{align}
 P_{plugin}( y_i = {I}_i \mid y^{i-1} ) = \frac{|\{y \in y^{i-1} \mid y = {I}_i\}| + \epsilon }{\sum_{X \in H}|\{y \in y^{i-1} \mid y = X\}| + \epsilon}
-\end{align*}
+\end{align}
 %\end{definition}
 Here $y_i$ is the i-th element to be encoded and $y^{i-1}$ is the sequence of elements encoded so far. We initialize the base case (no element has been sent yet) with a pseudocount $\epsilon$, which gives $P_{plugin}( y_1 = {I} \mid y^{0} ) = \frac{\epsilon}{\epsilon|H|}$. We pick $\epsilon=0.5$ as it is used generally with good results.
 
@@ -218,12 +219,14 @@ Let us adapt this principle to the problem of encoding patterns. The first step 
 
 From this definition we see that the \textbf{usage} of a pattern is a sum of how often it occurs as an instance. We can use this function to simplify things a little by realizing that we actually know the precise number of instances per pattern on the side of the decoder, but not as the decoder. This information can be used to slightly rephrase Definition \ref{plugin} to be able to encode items in arbitrary order. This produces the length function of the instance matrix ${I}$ as follows:
 %\footnote{Here we use the fact that we can interchange sums of logarithms with logarithms of products and that those terms can be moved around freely. Moreover we convert the real-valued product sequences to the Gamma function $\Gamma$, which is the factorial function extended to real and complex numbers such that $\Gamma(n) = (n-1)!$.}:
-\begin{align*}
+\begin{align}
+\begin{split}
 	L_{pp}({I}\mid P_{plugin}) &= \sum^{|{I}|}_{i=1} -\log \frac{|\{y \in y^{i-1} \mid y = {I}_i\}| + \epsilon }{\sum_{X \in H}|\{y \in y^{i-1} \mid y = X\}| + \epsilon}\\
 %	&= \sum^{|H|}_{X_i \in h} -\log \prod^{\mathrm{usage}(X_i)-1}_{j=0} \frac{j+\epsilon}{\sum^{i-1}_{k=1} U(X_k)+j+\epsilon|H|} \\
 	&= -\log \frac{\prod^{X_i\in H} \prod^{\mathrm{usage}(X_i)}_{j=0} j + \epsilon}{\prod^{|{I}|-1}_{j=0} j + \epsilon|H|} \\
 	&= -\sum^{|H|}_{X_i \in h} \left[ \log \frac{\Gamma(\mathrm{usage}(X_i)+\epsilon)}{\Gamma(\epsilon)}\right] + \log \frac{\Gamma(|{I}| + \epsilon|H|)}{\Gamma(\epsilon|H|)}
-\end{align*}
+\end{split}
+\end{align}
 
 %Lastly, in addition to $L_{\mathbb{N}}$ and $L_{pp}$ we also define the length of the uniform distribution $L_0(n)=log(n)$. That is, when $n$ items have equal probability they all receive a code of equal length $log(n)$.
 
