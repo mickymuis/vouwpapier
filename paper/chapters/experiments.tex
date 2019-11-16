@@ -6,11 +6,16 @@
 
 To asses the practical performance of the VOUW algorithm, we will primarily use the synthetic dataset generator RIL that was developed specifically for this purpose. RIL utilizes random walks to populate a matrix with patterns of a given size and prevalence, up to a specified density. We fill the remainder of the matrix with uniform noise which allows us to think of the density of patterns as the \emph{signal-to-noise ratio} (SNR). The objective of the resulting experiment is that we try to find all of the signal (the patterns) and none of the noise.
 
-\subsection{Metrics for evaluation}
+\subsubsection{Evaluation}
 
-Completely random data (noise) cannot be compressed (citation needed). Therefore if any compression is achieved, structure must be present in the original data. The SNR tells us how much noise is present in the data and thus conveniently gives us an upper bound of how much compression could be achieved. We use the ground truth SNR versus the resulting compression ratio as a benchmark to tell us how close we are in finding all the structure in the ground truth.
+Completely random data (noise) cannot be compressed (citation needed). Therefore if any compression is achieved, structure must be present in the original data. The SNR tells us how much noise is present in the data and thus conveniently gives us an upper bound of how much compression could be achieved. We use the ground truth SNR versus the resulting compression ratio as a benchmark to tell us how close we are in finding all the structure in the ground truth. 
 
 Because the compression ratio alone does not tell us the quality of the results, we also compare the ground truth matrix with the compressed result. In order to do this, we use the notion that elements that have been encoded with singleton patterns, could evidently not be compressed. These elements must therefore be noise. We reconstruct the original matrix from the compressed result, while we omit any singleton patterns. This essentially gives us a matrix of `positives' (signal) and `negatives' (noise). By comparing each element with the corresponding element in the ground truth matrix, the `true positives' can be calculated. This subsequently gives us traditional  figures for \emph{precision} and \emph{recall}.
+
+Figure \ref{fig:snr} plots input SNR versus compression as well as precision/recall for different matrix sizes. We expect the resulting compression ratio to be close to $1-\mathrm{snr}$. In Figure \ref{fig:usage} we explore this relation.
+
+
+Patterns with a low prevalence have a lower probability of being `detected' by the algorithm as they are more likely to by accidental/noise. This is also dependent on the size of the matrix
 
 \begin{figure}%
 	%\centering%
@@ -33,6 +38,7 @@ Because the compression ratio alone does not tell us the quality of the results,
 			 "data/256_snr_vs_recall_n10.txt" w l lc 2 lw 3 t "recall",\
 			 "data/256_snr_vs_compr_n10.txt" w l lc 3 lw 3 t "ratio"
 	\end{gnuplot}}\
+	\label{fig:snr}
 	\caption{The influence of the signal-to-noise ratio in the ground truth on the algorithm's performance}
 	\end{subfigure}%
 	~
@@ -56,6 +62,7 @@ Because the compression ratio alone does not tell us the quality of the results,
 			 "data/usage_test_512.txt" using 1:8 w l lc 3 lw 3 t "512",\
 			 "data/usage_test_1024.txt" using 1:8 w l lc 4 lw 3 t "1024"
 	\end{gnuplot}
+	\label{fig:usage}
 	\caption{Prevalence versus quality of the result (recall)}
 	\end{subfigure}
 \end{figure}
@@ -89,8 +96,29 @@ Because the compression ratio alone does not tell us the quality of the results,
 \caption{Difference}
 \label{fig-example1c}
 \end{subfigure}%
+\label{fig:ril}
 \caption{Example of how synthetic input is generated and evaluated.}
-
 \end{figure}  
+
+\begin{table}
+\centering
+\caption{Influence of optimizations with respect to the baseline algorithm}
+\label{table:optimize}
+\begin{tabular}{lcccccccc}
+\toprule
+ & \multicolumn{4}{c}{Precision/Recall} & \multicolumn{4}{c}{Average time}\\
+ \cmidrule(r){2-5} \cmidrule(r){6-9} 
+ & None & Local search & Best-N & Both & None & Local search & Best-N & Both \\
+\midrule
+ $256^2$   & .99/.8 & 0.99/0.88 & .96/.82 & .99/.89 & 2m 32s & 9s & 5s & 5s \\
+ $512^2$   & 0.00/0.00 & .99/.99 & .94/.91 & .97/.90 & 00m 00s & 2m 32s & 24s & 65s \\
+ $1024^2$ & 0.00/0.00 & .99/.99 & .93/.96 & .98/.97 & 00m 00s & 7m 31s & 1m 49s & 3m 31s \\
+%$L_p(X)$ & Pattern & $L_0(MN)$ & \multicolumn{2}{c}{$L_{\mathbb{N}}(\binom{M_XN_X}{|X|})$} & $L_0(|S|)$\\
+%$L_1(H)$ & Model & \emph{N/A} & $L_N(|H|)$ & \emph{N/A} & $L_p(X \in H)$ \\
+%$L_2({I})$ & Inst. mat.& \emph{constant} & $L_0(MN)$ & \emph{implicit} & $L_{pp}({I})$\\
+%$L_3(E)$ & Error mat. & \emph{constant} & $L_0(MN)$ & $L_0(MN)$ & $L_0(|S|)$\\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \end{document}
