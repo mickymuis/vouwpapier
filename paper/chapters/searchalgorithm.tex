@@ -111,8 +111,9 @@ Finding candidates and computing gain for these candidates, is the first part of
 
 This concludes the baseline version of the algorithm, which is listed in Algorithm \ref{alg:vouw}. 
 
-\subsection{Local search}
-
+\subsection{Improvements}
+\label{improvements}
+\subsubsection{Local Search}
 Given that some pattern $X$ is found in a given matrix, the baseline algorithm could have arrived to $X$ in different ways. Exploring these combinatorics can tell us how efficiently the algorithm arrives at $X$. By definition we know that the fundamental operation is to combine exactly two patterns into a new pattern on each step. Given this, the number of steps in which $X$ can be constructed lies between $\log_2|X|$ and $|X|-1$. 
 
 %Informally we can say that the algorithm searches for `as few and as large as possible patterns', because it tries to minimize the size of the model as well as that of the instance matrix at the same time. This means that it will try to generate pattern $X$ by adding small elements to a incrementally growing pattern, resulting in a behaviour that approaches $|X|-1$ steps. This is in contrast to a hypothetical divide-and-conquer strategy that would first generate parts of $X$ that are of sizes $2, 4, 8,$ etc, resulting in $\log_2|X|$ steps.
@@ -127,7 +128,7 @@ To improve efficiency on large patterns without sacrificing the objectivity of t
 \end{align}
 \noindent This yields zero or more candidates $(Z,W,\delta)$, which are then treated as any candidate: candidates with the highest gain are merged first until none exists with positive gain. This essentially means that we run the baseline algorithm on a subset of the elements of $I$, namely the peripheries of all $z_i$, with the condition that the cover of the candidates is equal to that of $Z$. Therefore we only expand $Z$ during local search and we do not create new patterns. 
 
-\subsection{Improving Heuristics}
+\subsubsection{Reusing Candidates}
 
 %In the baseline algorithm, candidate search is performed on each iteration and as exactly one candidate is selected. After merging the candidate, the list of candidates must be recomputed because the usages of the patterns may have changed and thus the gain function for the current set of candidates has become invalid. 
 Candidate search is by far the most expensive operation of the algorithm and is it performed on each iteration. We improve performance by reusing the candidate set and slightly changing the search heuristic of the algorithm. The 

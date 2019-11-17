@@ -4,18 +4,15 @@
 
 \section{Experiments and Results}
 
-To asses the practical performance of the VOUW algorithm, we will primarily use the synthetic dataset generator RIL that was developed specifically for this purpose. RIL utilizes random walks to populate a matrix with patterns of a given size and prevalence, up to a specified density. We fill the remainder of the matrix with uniform noise which allows us to think of the density of patterns as the \emph{signal-to-noise ratio} (SNR). The objective of the resulting experiment is that we try to find all of the signal (the patterns) and none of the noise.
+To asses the practical performance of the VOUW algorithm, we will primarily use the synthetic dataset generator RIL that was developed specifically for this purpose. RIL utilizes random walks to populate a matrix with patterns of a given size and prevalence, up to a specified density. We fill the remainder of the matrix with uniform noise which allows us to think of the density of patterns as the \emph{signal-to-noise ratio} (SNR). The objective of the resulting experiment is that we try to find all of the signal (the patterns) and none of the noise. Figure \ref{fig:ril} gives an overview of what the generated data looks like, how it is mined and evaluated.
 
 \subsubsection{Evaluation}
 
-Completely random data (noise) cannot be compressed (citation needed). Therefore if any compression is achieved, structure must be present in the original data. The SNR tells us how much noise is present in the data and thus conveniently gives us an upper bound of how much compression could be achieved. We use the ground truth SNR versus the resulting compression ratio as a benchmark to tell us how close we are in finding all the structure in the ground truth. 
+Completely random data (noise) is unlikely to be compressed (citation needed). The SNR tells us how much noise is present in the data and thus conveniently gives us an upper bound of how much compression could be achieved. We use the ground truth SNR versus the resulting compression ratio as a benchmark to tell us how close we are in finding all the structure in the ground truth. 
 
 Because the compression ratio alone does not tell us the quality of the results, we also compare the ground truth matrix with the compressed result. In order to do this, we use the notion that elements that have been encoded with singleton patterns, could evidently not be compressed. These elements must therefore be noise. We reconstruct the original matrix from the compressed result, while we omit any singleton patterns. This essentially gives us a matrix of `positives' (signal) and `negatives' (noise). By comparing each element with the corresponding element in the ground truth matrix, the `true positives' can be calculated. This subsequently gives us traditional  figures for \emph{precision} and \emph{recall}.
 
-Figure \ref{fig:snr} plots input SNR versus compression as well as precision/recall for different matrix sizes. We expect the resulting compression ratio to be close to $1-\mathrm{snr}$. In Figure \ref{fig:usage} we explore this relation.
-
-
-Patterns with a low prevalence have a lower probability of being `detected' by the algorithm as they are more likely to by accidental/noise. This is also dependent on the size of the matrix
+Figure \ref{fig:snr} plots input SNR versus compression as well as precision/recall for different matrix sizes. We expect the resulting compression ratio to be close to $1-\mathrm{snr}$. In Figure \ref{fig:usage} shows that patterns with a low prevalence have a lower probability of being `detected' by the algorithm as they are more likely to by accidental/noise. We see that increasing the matrix size also increases this threshold. Finally we look at the influence of the two improvements upon the baseline algorithm as described in Section \ref{improvements}. Table \ref{table:optimize} shows both precision/recall figures as well as wall clock time. In terms of quality, local search improves the results quite substantial in some cases (other experiments have shown that it can dramatically lower the detection threshold as well) while Best-N notably lowers precision. Both improve speed by an order of magnitude, although the improvements given by Best-N clearly superior. Another observation is that the baseline algorithm does not scale very favourable with matrix size and that these improvements may be a requisite when mining larger matrices.    
 
 \begin{figure}%
 	%\centering%
@@ -38,8 +35,8 @@ Patterns with a low prevalence have a lower probability of being `detected' by t
 			 "data/256_snr_vs_recall_n10.txt" w l lc 2 lw 3 t "recall",\
 			 "data/256_snr_vs_compr_n10.txt" w l lc 3 lw 3 t "ratio"
 	\end{gnuplot}}\
-	\label{fig:snr}
 	\caption{The influence of the signal-to-noise ratio in the ground truth on the algorithm's performance}
+	\label{fig:snr}
 	\end{subfigure}%
 	~
 	\begin{subfigure}[t]{0.5\textwidth}
@@ -62,9 +59,10 @@ Patterns with a low prevalence have a lower probability of being `detected' by t
 			 "data/usage_test_512.txt" using 1:8 w l lc 3 lw 3 t "512",\
 			 "data/usage_test_1024.txt" using 1:8 w l lc 4 lw 3 t "1024"
 	\end{gnuplot}
-	\label{fig:usage}
 	\caption{Prevalence versus quality of the result (recall)}
+	\label{fig:usage}
 	\end{subfigure}
+	\label{fig:plots}
 \end{figure}
 
 \begin{figure}
@@ -73,31 +71,31 @@ Patterns with a low prevalence have a lower probability of being `detected' by t
 \centering
 \includegraphics[scale=.9]{img/exp_input_2.png}
 \caption{Generated matrix}
-\label{fig-example1a}
+\label{fig:rila}
 \end{subfigure}%
 ~
 \begin{subfigure}[t]{0.25\textwidth}
 \centering
 \includegraphics[scale=.9]{img/exp_inputpatterns_2.png}
 \caption{Ground truth patterns}
-\label{fig-example1b}
+\label{fig:rilb}
 \end{subfigure}%
 ~
 \begin{subfigure}[t]{0.25\textwidth}
 \centering
 \includegraphics[scale=.9]{img/exp_result_2.png}
 \caption{Found patterns}
-\label{fig-example1c}
+\label{fig:rilc}
 \end{subfigure}%
 ~
 \begin{subfigure}[t]{0.25\textwidth}
 \centering
 \includegraphics[scale=.9]{img/exp_diff_2.png}
 \caption{Difference}
-\label{fig-example1c}
+\label{fig:rild}
 \end{subfigure}%
-\label{fig:ril}
 \caption{Example of how synthetic input is generated and evaluated.}
+\label{fig:ril}
 \end{figure}  
 
 \begin{table}
