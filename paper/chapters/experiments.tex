@@ -10,9 +10,9 @@ To asses the practical performance of the VOUW algorithm, we will primarily use 
 
 Completely random data (noise) is unlikely to be compressed (citation needed). The SNR tells us how much noise is present in the data and thus conveniently gives us an upper bound of how much compression could be achieved. We use the ground truth SNR versus the resulting compression ratio as a benchmark to tell us how close we are in finding all the structure in the ground truth. 
 
-Because the compression ratio alone does not tell us the quality of the results, we also compare the ground truth matrix with the compressed result. In order to do this, we use the notion that elements that have been encoded with singleton patterns, could evidently not be compressed. These elements must therefore be noise. We reconstruct the original matrix from the compressed result, while we omit any singleton patterns. This essentially gives us a matrix of `positives' (signal) and `negatives' (noise). By comparing each element with the corresponding element in the ground truth matrix, the `true positives' can be calculated. This subsequently gives us traditional  figures for \emph{precision} and \emph{recall}.
+Because the compression ratio alone does not tell us the quality of the results, we also compare the ground truth matrix with the compressed result. In order to do this, we use the notion that elements that have been encoded with singleton patterns, could evidently not be compressed. These elements must therefore be noise. We reconstruct the original matrix from the compressed result, while we omit any singleton patterns. This essentially gives us a matrix of `positives' (signal) and `negatives' (noise). By comparing each element with the corresponding element in the ground truth matrix, the \emph{true positives} can be calculated. This subsequently gives us traditional figures for \emph{precision} and \emph{recall}.
 
-Figure \ref{fig:snr} plots input SNR versus compression as well as precision/recall for different matrix sizes. We expect the resulting compression ratio to be close to $1-\mathrm{snr}$. In Figure \ref{fig:usage} shows that patterns with a low prevalence have a lower probability of being `detected' by the algorithm as they are more likely to by accidental/noise. We see that increasing the matrix size also increases this threshold. Finally we look at the influence of the two improvements upon the baseline algorithm as described in Section \ref{improvements}. Table \ref{table:optimize} shows both precision/recall figures as well as wall clock time. In terms of quality, local search improves the results quite substantial in some cases (other experiments have shown that it can dramatically lower the detection threshold as well) while Best-N notably lowers precision. Both improve speed by an order of magnitude, although the improvements given by Best-N clearly superior. Another observation is that the baseline algorithm does not scale very favourable with matrix size and that these improvements may be a requisite when mining larger matrices.    
+Figure \ref{fig:snr} plots input SNR versus compression as well as precision/recall for different matrix sizes. We expect the resulting compression ratio to be close to $1-\mathrm{snr}$. In Figure \ref{fig:usage} shows that patterns with a low prevalence have a lower probability of being `detected' by the algorithm as they are more likely to by accidental/noise. We see that increasing the matrix size also increases this threshold. Finally we look at the influence of the two improvements upon the baseline algorithm as described in Section \ref{improvements}. Table \ref{table:optimize} shows both precision/recall figures as well as wall clock time. In terms of quality, local search improves the results quite substantial in some cases (other experiments have shown that it can dramatically lower the detection threshold as well) while Best-N notably lowers precision. Both improve speed by an order of magnitude, although the improvements given by Best-N are clearly superior. Another observation is that the baseline algorithm does not scale very favourable with matrix size and that these improvements may be a requisite when mining larger matrices.    
 
 \begin{figure}%
 	%\centering%
@@ -65,7 +65,7 @@ Figure \ref{fig:snr} plots input SNR versus compression as well as precision/rec
 	\label{fig:plots}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[p]
 \centering
 \begin{subfigure}[t]{0.25\textwidth}
 \centering
@@ -98,7 +98,7 @@ Figure \ref{fig:snr} plots input SNR versus compression as well as precision/rec
 \label{fig:ril}
 \end{figure}  
 
-\begin{table}
+\begin{table}[p]
 \centering
 \caption{Influence of optimizations with respect to the baseline algorithm}
 \label{table:optimize}
