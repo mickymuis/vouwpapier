@@ -1,38 +1,38 @@
 \begin{tikzpicture}[on grid, grow=right]
-\node(R)[l1] {\tiny $\begin{matrix}\overbrace{\begin{bmatrix}0\end{bmatrix}}^{X},\overbrace{\begin{bmatrix}1\end{bmatrix}}^{Y}\\[1em]\underbrace{\begin{bmatrix}X & Y \\Y & X\end{bmatrix}}_{G}\end{matrix}$}
+\node(R)[l1] {\tiny $\begin{matrix}\overbrace{\begin{bmatrix}0\end{bmatrix}}^{X},\overbrace{\begin{bmatrix}1\end{bmatrix}}^{Y}\\[1em]\underbrace{\begin{bmatrix}X & Y \\Y & X\end{bmatrix}}_{I}\end{matrix}$}
 	child {
-        node(F)[l2] {\tiny $\underbrace{\begin{bmatrix}0 & 1\end{bmatrix}}_{V},\underbrace{\begin{bmatrix}V & \cdot \\Y & X\end{bmatrix}}_{G}$}        
+        node(F)[l3] {\tiny $\begin{bmatrix}0 & 1\end{bmatrix},\begin{bmatrix}V & \cdot \\Y & X\end{bmatrix}$}        
             edge from parent[draw=none] 
             (R) edge (F.west)
     }
     child {
-        node(E)[l2] {\tiny $\underbrace{\begin{bmatrix}1 \\ 0\end{bmatrix}}_{V},\underbrace{\begin{bmatrix}W & Z \\ Y & \cdot\end{bmatrix}}_{G}$}        
+        node(E)[l2] {\tiny $\begin{bmatrix}1 \\ 0\end{bmatrix},\begin{bmatrix}W & Z \\ Y & \cdot\end{bmatrix}$}        
             child {
                 node(J)[l3]
-                    {\tiny $\underbrace{\begin{bmatrix}0 & 1 \\ \cdot & 0\end{bmatrix}}_{W},\underbrace{\begin{bmatrix}Z & \cdot \\ Y & \cdot\end{bmatrix}}_{G}$}
+                    {\tiny $\begin{bmatrix}0 & 1 \\ \cdot & 0\end{bmatrix},\begin{bmatrix}Z & \cdot \\ Y & \cdot\end{bmatrix}$}
                 edge from parent 
             }
             edge from parent[draw=none] 
             (R) edge (E.west)
     }    
     child {
-        node(D)[l2] {\tiny $\underbrace{\begin{bmatrix}\cdot & 1 \\ 1 & \cdot\end{bmatrix}}_{V},\underbrace{\begin{bmatrix}X & Z \\ \cdot & X\end{bmatrix}}_{G}$}        
+        node(D)[l2] {\tiny $\begin{bmatrix}\cdot & 1 \\ 1 & \cdot\end{bmatrix},\begin{bmatrix}X & Z \\ \cdot & X\end{bmatrix}$}        
             child {
                 node(I)[l3]
-                    {\tiny $\underbrace{\begin{bmatrix}\cdot & 1 \\ 1 & 0\end{bmatrix}}_{W},\underbrace{\begin{bmatrix}X & Z \\ \cdot & \cdot\end{bmatrix}}_{G}$}
+                    {\tiny $\begin{bmatrix}\cdot & 1 \\ 1 & 0\end{bmatrix},\begin{bmatrix}X & Z \\ \cdot & \cdot\end{bmatrix}$}
                 edge from parent 
             }
             edge from parent[draw=none] 
             (R) edge (D.west)
     }    
     child {
-        node(C)[l2] {\tiny $\underbrace{\begin{bmatrix}0 \\ 1\end{bmatrix}}_{V},\underbrace{\begin{bmatrix}Z & Y \\\cdot & X\end{bmatrix}}_{G}$}        
+        node(C)[l2] {\tiny $\begin{bmatrix}0 \\ 1\end{bmatrix},\begin{bmatrix}Z & Y \\\cdot & X\end{bmatrix}$}        
             child {
                 node(H)[l3]
-                    {\tiny $\underbrace{\begin{bmatrix}0 & 1 \\ 1 & \cdot\end{bmatrix}}_{W},\underbrace{\begin{bmatrix}Z & \cdot \\ \cdot & X\end{bmatrix}}_{G}$
+                    {\tiny $\begin{bmatrix}0 & 1 \\ 1 & \cdot\end{bmatrix},\begin{bmatrix}Z & \cdot \\ \cdot & X\end{bmatrix}$
                     }                    
                     	child {
-                    		node(K)[l3] {\tiny $\underbrace{\begin{bmatrix}0 & 1 \\ 1 & 0\end{bmatrix}}_{Z},\underbrace{\begin{bmatrix}Z & \cdot \\ \cdot & \cdot\end{bmatrix}}_{G}$}
+                    		node(K)[l3] {\tiny $\begin{bmatrix}0 & 1 \\ 1 & 0\end{bmatrix},\begin{bmatrix}Z & \cdot \\ \cdot & \cdot\end{bmatrix}$}
                     	}
                 edge from parent 
             }
@@ -40,17 +40,17 @@
             (R) edge (C.west)
     }    
     child {
-        node(B)[l2] {\tiny $\underbrace{\begin{bmatrix}0 & \cdot \\ \cdot & 0\end{bmatrix}}_{V},\underbrace{\begin{bmatrix}Z & Y \\Y & \cdot\end{bmatrix}}_{G}$}        
+        node(B)[l2] {\tiny $\begin{bmatrix}0 & \cdot \\ \cdot & 0\end{bmatrix},\begin{bmatrix}Z & Y \\Y & \cdot\end{bmatrix}$}        
             child {
                 node(G)[l3]
-                    {\tiny $\underbrace{\begin{bmatrix}0 & \cdot \\ 1 & 0\end{bmatrix}}_{W},\underbrace{\begin{bmatrix}Z & Y \\ \cdot & \cdot\end{bmatrix}}_{G}$}
+                    {\tiny $\overbrace{\begin{bmatrix}0 & \cdot \\ 1 & 0\end{bmatrix}}^{W},\overbrace{\begin{bmatrix}Z & Y \\ \cdot & \cdot\end{bmatrix}}^{I}$\vspace{.5cm}}
                 edge from parent 
             }
             edge from parent[draw=none] 
             (R) edge (B.west)
     } 
     child {
-        node(A)[l2] {\tiny $\underbrace{\begin{bmatrix}1 &0\end{bmatrix}}_{V},\underbrace{\begin{bmatrix}X & Y \\Z & \cdot\end{bmatrix}}_{G}$}        
+        node(A)[l2] {\vspace{.5cm}\tiny $\overbrace{\begin{bmatrix}1 &0\end{bmatrix}}^{V},\overbrace{\begin{bmatrix}X & Y \\Z & \cdot\end{bmatrix}}^{I}$}        
         	edge from parent[draw=none] 
             (R) edge (A.west)
     };
@@ -66,4 +66,4 @@
 \draw(I.east)--(K.west);
 \draw(J.east)--(K.west);
 \end{tikzpicture}
-\caption{The model space lattice for a $2\times 2$ Boolean matrix. Here $X$ and $Y$ are the initial singleton patterns and $G$ is the instance matrix. $V$ and $W$ are intermediate patterns and $Z$ is the final, completely over fit, pattern.}
+\caption{The model space lattice for a $2\times 2$ Boolean matrix. Here $X$ and $Y$ are the initial singleton patterns and $I$ is the instance matrix. $V$ and $W$ are intermediate patterns and $Z$ is the final, completely over fit, pattern.}
