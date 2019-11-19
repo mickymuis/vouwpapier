@@ -1,0 +1,6 @@
+libvouw commit: d5dcc86 
+sonnet18.csv: quantize 64, ff on, tabu on
+turing2048.csv: quantize 256, ff on, tabu off
+noisy_triangles256.csv: quantize 8, ff off, tabu off
+smileys512x512.csv: quantize 256, ff off, tabu on
+eda1024.csv: quantize 256, ff off, tabu off

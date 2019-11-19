@@ -19,7 +19,7 @@ Figure \ref{fig:snr} plots input SNR versus compression as well as precision/rec
 	\begin{subfigure}[t]{0.5\textwidth}
 	%\centering
 	\begin{gnuplot}[terminal=epslatex, terminaloptions={color dashed size 6.5cm,6cm font "lmodern,8"}]
-		set key box bottom right
+		set key box bottom left
 		set key width 1.0
 		set key height 1.0
 		set key spacing 1.1
@@ -30,14 +30,19 @@ Figure \ref{fig:snr} plots input SNR versus compression as well as precision/rec
 		set grid xtics lt 0 ls 0
 		set grid ytics lt 0 ls 0
 		set xlabel 'signal-to-noise ratio'
-		set ylabel ''
-		plot "data/256_snr_vs_prec_n10.txt" w l lc 1 lw 3 t "precision",\
-			 "data/256_snr_vs_recall_n10.txt" w l lc 2 lw 3 t "recall",\
-			 "data/256_snr_vs_compr_n10.txt" w l lc 3 lw 3 t "ratio"
+		set ylabel 'compression'
+		#plot "data/256_snr_vs_prec_n10.txt" w l lc 1 lw 3 t "precision",\
+		#	 "data/256_snr_vs_recall_n10.txt" w l lc 2 lw 3 t "recall",\
+		#	 "data/256_snr_vs_compr_n10.txt" w l lc 3 lw 3 t "ratio"
+		plot "data/output_snr_256.txt" using 4:5 w l lc 1 lw 3 t "256",\
+  			 "data/output_snr_512.txt" using 4:5 w l lc 2 lw 3 t "512",\
+  			 "data/output_snr_1024.txt" using 4:5 w l lc 3 lw 3 t "1024",\
+  			 "data/output_snr_2048.txt" using 4:5 w l lc 4 lw 3 t "2048"
 	\end{gnuplot}}\
-	\caption{The influence of the signal-to-noise ratio in the ground truth on the algorithm's performance}
+	\caption{The influence of SNR in the ground truth}
 	\label{fig:snr}
 	\end{subfigure}%
+	%\vspace{-\baselineskip}
 	~
 	\begin{subfigure}[t]{0.5\textwidth}
 	%\centering
@@ -52,16 +57,18 @@ Figure \ref{fig:snr} plots input SNR versus compression as well as precision/rec
 		set yr [0:1]
 		set grid xtics lt 0 ls 0
 		set grid ytics lt 0 ls 0
-		set xlabel 'Prevalence per pattern'
-		set ylabel 'Recall' offset 1,0,0
+		set xlabel 'prevalence per pattern'
+		set ylabel 'recall' offset 1,0,0
 		plot "data/usage_test_128.txt" using 1:8 w l lc 1 lw 3 t "128",\
 			 "data/usage_test_256.txt" using 1:8 w l lc 2 lw 3 t "256",\
 			 "data/usage_test_512.txt" using 1:8 w l lc 3 lw 3 t "512",\
 			 "data/usage_test_1024.txt" using 1:8 w l lc 4 lw 3 t "1024"
 	\end{gnuplot}
-	\caption{Prevalence versus quality of the result (recall)}
+	%\vspace{-\baselineskip}
+	\caption{Prevalence versus recall}
 	\label{fig:usage}
 	\end{subfigure}
+	\caption{}
 	\label{fig:plots}
 \end{figure}
 
@@ -69,28 +76,28 @@ Figure \ref{fig:snr} plots input SNR versus compression as well as precision/rec
 \centering
 \begin{subfigure}[t]{0.25\textwidth}
 \centering
-\includegraphics[scale=.9]{img/exp_input_2.png}
+\includegraphics[scale=.9]{img/exp_input_2_cropped.png}
 \caption{Generated matrix}
 \label{fig:rila}
 \end{subfigure}%
 ~
 \begin{subfigure}[t]{0.25\textwidth}
 \centering
-\includegraphics[scale=.9]{img/exp_inputpatterns_2.png}
+\includegraphics[scale=.9]{img/exp_inputpatterns_2_cropped.png}
 \caption{Ground truth patterns}
 \label{fig:rilb}
 \end{subfigure}%
 ~
 \begin{subfigure}[t]{0.25\textwidth}
 \centering
-\includegraphics[scale=.9]{img/exp_result_2.png}
+\includegraphics[scale=.9]{img/exp_result_2_cropped.png}
 \caption{Found patterns}
 \label{fig:rilc}
 \end{subfigure}%
 ~
 \begin{subfigure}[t]{0.25\textwidth}
 \centering
-\includegraphics[scale=.9]{img/exp_diff_2.png}
+\includegraphics[scale=.9]{img/exp_diff_2_cropped.png}
 \caption{Difference}
 \label{fig:rild}
 \end{subfigure}%
@@ -106,17 +113,17 @@ Figure \ref{fig:snr} plots input SNR versus compression as well as precision/rec
 \toprule
  & \multicolumn{4}{c}{Precision/Recall} & \multicolumn{4}{c}{Average time}\\
  \cmidrule(r){2-5} \cmidrule(r){6-9} 
- & None & Local search & Best-N & Both & None & Local search & Best-N & Both \\
+ Size & None & Local search & Best-N & Both & None & Local search & Best-N & Both \\
 \midrule
- $256^2$   & .99/.8 & 0.99/0.88 & .96/.82 & .99/.89 & 2m 32s & 9s & 5s & 5s \\
+ $256^1$   & .98/.98 & .99/.99 & .93/.98 & .95/.99 & 29s & 1s & 2s & 1s \\
+ $256^2$   & .99/.8 & .99/.88 & .96/.82 & .99/.89 & 2m 32s & 9s & 5s & 5s \\
+ $512^1$   & .98/.97 & .99/.99 & .87/.97 & .93/.98 & 5m 26s & 8s & 20s & 6s \\
  $512^2$   & .97/.93 & .99/.99 & .94/.91 & .97/.90 & 26m 52s & 2m 32s & 24s & 65s \\
+ $1024^1$ & .97/.98 & .99/.99 & .84/.98 & .92/.96 & 21m 34s & 44s & 37s & 34s \\
  $1024^2$ & .98/.98 & .99/.99 & .93/.96 & .98/.97 & 116m & 7m 31s & 1m 49s & 3m 31s \\
-%$L_p(X)$ & Pattern & $L_0(MN)$ & \multicolumn{2}{c}{$L_{\mathbb{N}}(\binom{M_XN_X}{|X|})$} & $L_0(|S|)$\\
-%$L_1(H)$ & Model & \emph{N/A} & $L_N(|H|)$ & \emph{N/A} & $L_p(X \in H)$ \\
-%$L_2({I})$ & Inst. mat.& \emph{constant} & $L_0(MN)$ & \emph{implicit} & $L_{pp}({I})$\\
-%$L_3(E)$ & Error mat. & \emph{constant} & $L_0(MN)$ & $L_0(MN)$ & $L_0(|S|)$\\
 \bottomrule
 \end{tabular}
+\caption*{$^1$ signal-to-noise ratio of $.05$, $^2$ signal-to-noise ratio of $.3$}
 \end{table}
 
 \end{document}
