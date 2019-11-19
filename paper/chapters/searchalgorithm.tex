@@ -17,13 +17,14 @@ The first step of the algorithm is to find the `best' \textbf{candidate} pair of
 
 The \textbf{support} of a candidate, written $\mathrm{sup}(X,Y,\delta)$, tells how often it is found in the instance matrix. Computing support is not completely trivial, as one candidate occurs multiple times in `mirrored' configurations, such as $(X,Y,\delta)$ and $(Y,X,-\delta)$, which are equivalent but can still be found separately. Furthermore, due to the definition of a pattern, many potential candidates cannot be considered by the simple fact that their elements are not adjacent.
 
-\subsubsection{Peripheries}
-For each instance $x$ we define its \emph{periphery}: the set of instances which are positioned such that their union with $x$ produces a valid pattern. This set is split into the \emph{anterior-} $\mathrm{ANT}(X)$ and \emph{posterior} $\mathrm{POST}(X)$ peripheries, containing instances that come before and after $x$ in lexicographical order, respectively. This enables us to scan the instance matrix once, in lexicographical order. For each instance $x$, we only consider the instances $\mathrm{POST}(x)$ as candidates, thereby eliminating any (mirrored) duplicates. 
+%\subsubsection{Peripheries}
+\smallskip \noindent \textbf{Peripheries.} For each instance $x$ we define its \emph{periphery}: the set of instances which are positioned such that their union with $x$ produces a valid pattern. This set is split into the \emph{anterior-} $\mathrm{ANT}(X)$ and \emph{posterior} $\mathrm{POST}(X)$ peripheries, containing instances that come before and after $x$ in lexicographical order, respectively. This enables us to scan the instance matrix once, in lexicographical order. For each instance $x$, we only consider the instances $\mathrm{POST}(x)$ as candidates, thereby eliminating any (mirrored) duplicates. 
 
-\subsubsection{Self-Overlap}
-Self-overlap happens for candidates of the form $(X,X,\delta)$. In this case, too many or too few copies may be counted. Take for example a straight line of five instances of $X$. There are four unique pairs of two $X$'s, but only two can be merged at a time, in three different ways. Therefore, when considering candidates of the form $(X,X,\delta)$, we also compute an \emph{overlap coefficient}. This coefficient $e$ is given by the equation $e = (2N_X+1)\delta_i + \delta_j + N_X$. This equation essentially transforms $\delta$ into a one-dimensional coordinate space of all possible ways that $X$ could be arranged \emph{after} and \emph{adjacent} to itself. For each instance $x_1$ a vector of bits $V(x)$ is used to remember if we have already encountered a combination $x_1,x_2$ with coefficient $e$, such that we do not count a combination $x_2,x_3$ with an equal $e$. This eliminates the problem of incorrect counting due to self-overlap.
+%\subsubsection{Self-Overlap}
+\smallskip \noindent \textbf{Self-overlap.} Self-overlap happens for candidates of the form $(X,X,\delta)$. In this case, too many or too few copies may be counted. Take for example a straight line of five instances of $X$. There are four unique pairs of two $X$'s, but only two can be merged at a time, in three different ways. Therefore, when considering candidates of the form $(X,X,\delta)$, we also compute an \emph{overlap coefficient}. This coefficient $e$ is given by the equation $e = (2N_X+1)\delta_i + \delta_j + N_X$. This equation essentially transforms $\delta$ into a one-dimensional coordinate space of all possible ways that $X$ could be arranged \emph{after} and \emph{adjacent} to itself. For each instance $x_1$ a vector of bits $V(x)$ is used to remember if we have already encountered a combination $x_1,x_2$ with coefficient $e$, such that we do not count a combination $x_2,x_3$ with an equal $e$. This eliminates the problem of incorrect counting due to self-overlap.
 
-\begin{figure*}
+\begin{figure*}[t!]
+\vspace{-\baselineskip}
 \begin{minipage}[t]{.45\textwidth}
 	\begin{algorithm}[H]
 	\caption{Find Candidates}
@@ -108,8 +109,8 @@ In the second part of the algorithm we select the candidate $(X,Y,\delta)$ with 
 
 \subsection{Improvements}
 \label{improvements}
-\subsubsection{Local Search}
-Given a matrix containing some pattern $X$, the algorithm can arrive to $X$ in different ways. Exploring these combinatorics can tell us how efficiently the algorithm arrives at $X$. By definition we know that the fundamental operation is to combine exactly two patterns on each step. Given this, the number of steps in which $X$ can be constructed lies between $\log_2|X|$ and $|X|-1$. 
+%\subsubsection{Local Search}
+\noindent \textbf{Local search.} Given a matrix containing some pattern $X$, the algorithm can arrive to $X$ in different ways. Exploring these combinatorics can tell us how efficiently the algorithm arrives at $X$. By definition we know that the fundamental operation is to combine exactly two patterns on each step. Given this, the number of steps in which $X$ can be constructed lies between $\log_2|X|$ and $|X|-1$. 
 
 %Informally we can say that the algorithm searches for `as few and as large as possible patterns', because it tries to minimize the size of the model as well as that of the instance matrix at the same time. This means that it will try to generate pattern $X$ by adding small elements to a incrementally growing pattern, resulting in a behaviour that approaches $|X|-1$ steps. This is in contrast to a hypothetical divide-and-conquer strategy that would first generate parts of $X$ that are of sizes $2, 4, 8,$ etc, resulting in $\log_2|X|$ steps.
 
@@ -123,10 +124,11 @@ To improve efficiency on large patterns without sacrificing the objectivity of t
 \end{align}
 \noindent This yields zero or more candidates $(Z,W,\delta)$, which are then treated as any candidate: candidates with the highest gain are merged first until none exists with positive gain. This essentially means that we run the baseline algorithm only on the peripheries of all $z_i$, with the condition that the support of the candidates is equal to that of $Z$. Therefore we only expand $Z$ during local search and we do not create new patterns. 
 
-\subsubsection{Reusing Candidates}
+%\subsubsection{Reusing Candidates}
 
 %In the baseline algorithm, candidate search is performed on each iteration and as exactly one candidate is selected. After merging the candidate, the list of candidates must be recomputed because the usages of the patterns may have changed and thus the gain function for the current set of candidates has become invalid. 
-Candidate search is by far the most expensive operation of the algorithm and is it performed on each iteration. We improve performance by reusing the candidate set and slightly changing the search heuristic of the algorithm. The \textbf{Best-N} heuristic selects multiple candidates on each iteration as opposed to the baseline \textbf{Best-1} heuristic that only selects a single candidate with the highest gain. Best-N selects candidates in descending order of (positive) gain. Furthermore we only consider candidates that are all \emph{disjunct}, because when we merge candidate $(X,Y,\delta)$, remaining candidates with $X$ and/or $Y$ have unknown support and therefore unknown gain. Only when no candidates with positive gain are left, candidate search is performed again.% On matrices with multiple unrelated patterns, or matrices with large symbol sets, this heuristic works greatly improves performance.
+
+\smallskip \noindent \textbf{Reusing candidates.} Candidate search is by far the most expensive operation of the algorithm and is it performed on each iteration. We improve performance by reusing the candidate set and slightly changing the search heuristic of the algorithm. The \textbf{Best-N} heuristic selects multiple candidates on each iteration as opposed to the baseline \textbf{Best-1} heuristic that only selects a single candidate with the highest gain. Best-N selects candidates in descending order of (positive) gain. Furthermore we only consider candidates that are all \emph{disjunct}, because when we merge candidate $(X,Y,\delta)$, remaining candidates with $X$ and/or $Y$ have unknown support and therefore unknown gain. Only when no candidates with positive gain are left, candidate search is performed again.% On matrices with multiple unrelated patterns, or matrices with large symbol sets, this heuristic works greatly improves performance.
 
 %By doing a breadth-first-search in the periphery of all newly created instances after the last step of the algorithm. 
 

@@ -8,9 +8,9 @@
 
 %In this subsection we will introduce a method for describing and decomposing tabular or matrix-like data. It is this concise notation that allows us to reason about what one can and cannot expect to find from a set of data and what this data could look like. In later subsections we will use these tools to gradually connect to the MDL principle and finally to a practical search algorithm.
 
-We define geometric pattern mining on bounded, discrete and two-dimensional raster-based data. We represent this data as an $M\times N$ matrix $A$ whose rows and columns are finite and in a fixed ordering (i.e. reordering rows and columns semantically alters the matrix). For elements $a_{i,j}$, where row $i$ is on $[0;N)$ and column $j$ is on $[0;M)$, holds that $a_{i,j} \in S$, the finite set of symbols occurring in $A$. %We will denote $A$ as a matrix because of the convenience of the linear algebra notation\footnote{In any practical application however, $A$ will not represent a system of linear equations but rather hold some form of sampled data that can be placed on a grid.}
+We define geometric pattern mining on bounded, discrete and two-dimensional raster-based data. We represent this data as an $M\times N$ matrix $A$ whose rows and columns are finite and in a fixed ordering (i.e. reordering rows and columns semantically alters the matrix). For elements $a_{i,j}$, where row $i$ is on $[0;N)$ and column $j$ is on $[0;M)$, holds that $a_{i,j} \in S$, the finite set of symbols over $A$. %We will denote $A$ as a matrix because of the convenience of the linear algebra notation\footnote{In any practical application however, $A$ will not represent a system of linear equations but rather hold some form of sampled data that can be placed on a grid.}
 
-\begin{figure}
+\begin{figure}[b]
 \input{"figures/decomposition_example.tex"}
 \label{example1}
 \end{figure}
@@ -74,7 +74,7 @@ We briefly introduced the instantiation $I$ as a set of `instructions' of where 
 %\end{definition}
 \smallskip
 
-The above definition creates the interesting proposition that the offset to each instance is unique. We provide a sketch proof in Appendix \ref{appendix_a} in \cite{archive}.
+%The above definition creates the interesting proposition that the offset to each instance is unique. We provide a sketch proof in Appendix \ref{appendix_a} in \cite{archive}.
 %Given that a pattern's pivot is placed exactly at one offset and that instances must be non-overlapping, makes this indeed believable. Later when we inductively define the set $\mathcal{I}$ of all instantiation matrices, this will be shown to be true more formally. 
 
 %%
@@ -132,9 +132,9 @@ As Figure \ref{example2} demonstrates, we can use a simple element-wise matrix a
 \label{example2}
 \end{figure}
 
-\begin{theorem}\label{fundamental}
-Given two non-overlapping instances ${x}=X\otimes {q}$ and ${y}=Y\otimes {r}$, the sum of the matrices ${x} + {y}$ is another instance. We observe that pattern $Z=\oslash({x} + {y})$ such that ${x} + {y} = Z\otimes {q}$.
-\end{theorem}
+%\begin{theorem}\label{fundamental}
+%Given two non-overlapping instances ${x}=X\otimes {q}$ and ${y}=Y\otimes {r}$, the sum of the matrices ${x} + {y}$ is another instance. %We observe that pattern $Z=\oslash({x} + {y})$ such that ${x} + {y} = Z\otimes {q}$.
+%\end{theorem}
 
 %Notice that this sum has the limitation that two instances can only be summed if they do not overlap. While this is a serious limitation, we will show in the next subsection that it is not of any practical relevance.
 
@@ -213,9 +213,12 @@ To losslessly encode $A'$ we have to encode both $H$ and ${I}$ individually. As 
 	L_{pp}({I}\mid P_{plugin}) &= -\sum^{|H|}_{X_i \in h} \left[ \log \frac{\Gamma(\mathrm{usage}(X_i)+\epsilon)}{\Gamma(\epsilon)}\right] + \log \frac{\Gamma(|{I}| + \epsilon|H|)}{\Gamma(\epsilon|H|)}
 \end{align}
 
-\begin{table}
+\begin{table}[t]
 \centering
+\vspace{-\baselineskip}
 \caption{Length computation for the different classes of matrices. The total length is the sum of the listed terms.}
+\label{tablelength}
+\vspace{3pt}
 \begin{tabular}{llcccc}
 \toprule
  & Matrix  &  Bounds & \# Elements & Positions & Symbols \\ 
@@ -229,8 +232,6 @@ $L_1(H)$ & Model & \emph{N/A} & $L_N(|H|)$ & \emph{N/A} & $L_p(X \in H)$ \\
 $L_2({I})$ & Inst. mat.& \emph{constant} & $\log(MN)$ & \emph{implicit} & $L_{pp}({I})$\\
 \bottomrule
 \end{tabular}
-
-\label{tablelength}
 \end{table}
 
 Each length function has four terms. First we encode the total size of the matrix. Since we assume $MN$ to be known/constant, we can use this constant to define the uniform distribution $\frac{1}{MN}$, such that $\log{MN}$ encodes an arbitrary index of $A$. Next we encode the number of elements that are non-empty. For patterns this value is encoded together with the third term, namely the positions of the non-empty elements. We use the previously encoded $M_XN_X$ in the binominal function to enumerate the ways we can place the ($|X|$) elements onto a grid of $M_XN_X$. This gives us both \emph{how many} non-empties there are as well as \emph{where} they are. Finally the fourth term is the length of the actual symbols that encode the elements of matrix. In case we encode single elements of $A$, we simply assume that each unique value in $A$ has an equal possibility of occurring. For the instance matrix, which encodes symbols to patterns, the prequential code is used as demonstrated before. Notice that $L_N$ is the universal prior for integers\cite{integerprior} that can be used to encode integers on an arbitrary range.
