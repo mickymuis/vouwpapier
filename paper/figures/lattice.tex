@@ -6,33 +6,33 @@
             (R) edge (F.west)
     }
     child {
-        node(E)[l2] {\tiny $\begin{bmatrix}1 \\ 0\end{bmatrix},\begin{bmatrix}W & Z \\ Y & \cdot\end{bmatrix}$}        
+        node(E)[l2] {\tiny $\begin{bmatrix}1 \\ 0\end{bmatrix},\begin{bmatrix}W & V \\ Y & \cdot\end{bmatrix}$}        
             child {
                 node(J)[l3]
-                    {\tiny $\begin{bmatrix}0 & 1 \\ \cdot & 0\end{bmatrix},\begin{bmatrix}Z & \cdot \\ Y & \cdot\end{bmatrix}$}
+                    {\tiny $\begin{bmatrix}0 & 1 \\ \cdot & 0\end{bmatrix},\begin{bmatrix}W & \cdot \\ Y & \cdot\end{bmatrix}$}
                 edge from parent 
             }
             edge from parent[draw=none] 
             (R) edge (E.west)
     }    
     child {
-        node(D)[l2] {\tiny $\begin{bmatrix}\cdot & 1 \\ 1 & \cdot\end{bmatrix},\begin{bmatrix}X & Z \\ \cdot & X\end{bmatrix}$}        
+        node(D)[l2] {\tiny $\begin{bmatrix}\cdot & 1 \\ 1 & \cdot\end{bmatrix},\begin{bmatrix}X & V \\ \cdot & X\end{bmatrix}$}        
             child {
                 node(I)[l3]
-                    {\tiny $\begin{bmatrix}\cdot & 1 \\ 1 & 0\end{bmatrix},\begin{bmatrix}X & Z \\ \cdot & \cdot\end{bmatrix}$}
+                    {\tiny $\begin{bmatrix}\cdot & 1 \\ 1 & 0\end{bmatrix},\begin{bmatrix}X & W \\ \cdot & \cdot\end{bmatrix}$}
                 edge from parent 
             }
             edge from parent[draw=none] 
             (R) edge (D.west)
     }    
     child {
-        node(C)[l2] {\tiny $\begin{bmatrix}0 \\ 1\end{bmatrix},\begin{bmatrix}Z & Y \\\cdot & X\end{bmatrix}$}        
+        node(C)[l2] {\tiny $\begin{bmatrix}0 \\ 1\end{bmatrix},\begin{bmatrix}V & Y \\\cdot & X\end{bmatrix}$}        
             child {
                 node(H)[l3]
-                    {\tiny $\begin{bmatrix}0 & 1 \\ 1 & \cdot\end{bmatrix},\begin{bmatrix}Z & \cdot \\ \cdot & X\end{bmatrix}$
+                    {\tiny $\begin{bmatrix}0 & 1 \\ 1 & \cdot\end{bmatrix},\begin{bmatrix}W & \cdot \\ \cdot & X\end{bmatrix}$
                     }                    
                     	child {
-                    		node(K)[l3] {\tiny $\begin{bmatrix}0 & 1 \\ 1 & 0\end{bmatrix},\begin{bmatrix}Z & \cdot \\ \cdot & \cdot\end{bmatrix}$}
+                    		node(K)[l3] {\tiny $\overbrace{\begin{bmatrix}0 & 1 \\ 1 & 0\end{bmatrix}}^{Z},\overbrace{\begin{bmatrix}Z & \cdot \\ \cdot & \cdot\end{bmatrix}}^{I}$}
                     	}
                 edge from parent 
             }
@@ -40,17 +40,17 @@
             (R) edge (C.west)
     }    
     child {
-        node(B)[l2] {\tiny $\begin{bmatrix}0 & \cdot \\ \cdot & 0\end{bmatrix},\begin{bmatrix}Z & Y \\Y & \cdot\end{bmatrix}$}        
+        node(B)[l2] {\tiny $\begin{bmatrix}0 & \cdot \\ \cdot & 0\end{bmatrix},\begin{bmatrix}V & Y \\Y & \cdot\end{bmatrix}$}        
             child {
                 node(G)[l3]
-                    {\tiny $\overbrace{\begin{bmatrix}0 & \cdot \\ 1 & 0\end{bmatrix}}^{W},\overbrace{\begin{bmatrix}Z & Y \\ \cdot & \cdot\end{bmatrix}}^{I}$\vspace{.5cm}}
+                    {\tiny $\overbrace{\begin{bmatrix}0 & \cdot \\ 1 & 0\end{bmatrix}}^{W},\overbrace{\begin{bmatrix}W & Y \\ \cdot & \cdot\end{bmatrix}}^{I}$\vspace{.5cm}}
                 edge from parent 
             }
             edge from parent[draw=none] 
             (R) edge (B.west)
     } 
     child {
-        node(A)[l2] {\vspace{.5cm}\tiny $\overbrace{\begin{bmatrix}1 &0\end{bmatrix}}^{V},\overbrace{\begin{bmatrix}X & Y \\Z & \cdot\end{bmatrix}}^{I}$}        
+        node(A)[l2] {\vspace{.5cm}\tiny $\overbrace{\begin{bmatrix}1 &0\end{bmatrix}}^{V},\overbrace{\begin{bmatrix}X & Y \\V & \cdot\end{bmatrix}}^{I}$}        
         	edge from parent[draw=none] 
             (R) edge (A.west)
     };

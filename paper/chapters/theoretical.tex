@@ -2,7 +2,7 @@
 \input{"../preamble.tex"}
 \begin{document}
 
-\section{Theoretical Framework}
+\section{Geometric Pattern Mining using MDL}
 
 %\subsection{On Patterns and Matrices}
 
@@ -63,7 +63,14 @@ Obviously this does not yield a valid result for an arbitrary offset $(i,j)$. We
 %\end{definition}
 \smallskip
 
-From here on we will use the same letter in lower case to denote an arbitrary instance of a pattern, e.g. $x = X \otimes {q}$ when the exact value of ${q}$ is unimportant.%
+From here on we will use the same letter in lower case to denote an arbitrary instance of a pattern, e.g. $x = X \otimes {q}$ when the exact value of ${q}$ is unimportant. Since instances are simply patterns projected on an $M\times N$ matrix, we can reverse $\otimes$ by removing all completely empty rows and columns:
+
+\smallskip
+\noindent $\triangleright$
+%\begin{definition}
+\emph{Let $X \otimes {q}$ be an instance of $X$, then by definition we say that $\oslash(X \otimes {q}) = X$.}
+%\end{definition}
+\smallskip
 
 We briefly introduced the instantiation $I$ as a set of `instructions' of where instances of each pattern should be positioned in order to obtain $A$. As Figure \ref{example1} suggests, this mapping has the shape of an $M\times N$ matrix.
 
@@ -115,16 +122,7 @@ One possibility for solving this problem is to let the MDL equation decide wheth
 \label{constructpatterns}
 %Patterns can be joined to create increasingly large patterns and, as we will later see, this concept forms the basis of the search algorithm. However, two patterns could be joined in any different number of ways.
 
-Patterns can be constructed by joining smaller patterns in a bottom-up fashion. We can define the exact way two patterns should be joined by enumerating the distance of their respective pivots. To limit the possibilities to patterns relevant to $A$, instances can be used as an intermediate step. Since instances are simply patterns projected on an $M\times N$ matrix, we can reverse $\otimes$ by removing all completely empty rows and columns:
-
-\smallskip
-\noindent $\triangleright$
-%\begin{definition}
-\emph{Let $X \otimes {q}$ be an instance of $X$, then by definition we say that $\oslash(X \otimes {q}) = X$.}
-%\end{definition}
-\smallskip
-
-As Figure \ref{example2} demonstrates, we can use a simple element-wise matrix addition to sum two instances and use $\oslash$ to obtain a joined pattern. Here we start by instantiating $X$ and $Y$ with offsets $(1,0)$ and $(1,1)$ respectively. We add the resulting ${x}$ and ${y}$ to obtain $\oslash{z}$, the union of $X$ and $Y$ with relative offset $(1,1)-(1,0)=(0,1)$. %We formally describe this mechanism in Theorem \ref{fundamental}. As we will see later, this will become the fundamental operation of our algorithm.
+Patterns can be constructed by joining smaller patterns in a bottom-up fashion. We can define the exact way two patterns should be joined by enumerating the distance of their respective pivots. To limit the possibilities to patterns relevant to $A$, instances can be used as an intermediate step. As Figure \ref{example2} demonstrates, we can use a simple element-wise matrix addition to sum two instances and use $\oslash$ to obtain a joined pattern. Here we start by instantiating $X$ and $Y$ with offsets $(1,0)$ and $(1,1)$ respectively. We add the resulting ${x}$ and ${y}$ to obtain $\oslash{z}$, the union of $X$ and $Y$ with relative offset $(1,1)-(1,0)=(0,1)$. %We formally describe this mechanism in Theorem \ref{fundamental}. As we will see later, this will become the fundamental operation of our algorithm.
 
 \begin{figure}[b]
 \centering
@@ -200,7 +198,7 @@ In order to compute their lengths, we need to decide on a way to encode $H$ and 
  
 %To be able to compute the length of a given code word we must know the probability of that word occurring in our data. This information must also be available to the hypothetical decoder as otherwise the encoding is not lossless. Sometimes this is not practical as we do not know the probability distribution beforehand. For example, given an arbitrary encoded $A'$, we do not know the probability that each pattern occurs in the instantiation matrix. We could also encode this information and pass it to the decoder separately, but this is generally a bad idea. It cannot be stressed enough that the leanest encoding gives us the most information about the true compression ratio we achieve, while bookkeeping and meta-information only incur an undue bias. 
 
-The fictional encoder sequentially sends each symbol in the datastream to the `decoder' using a code word. Information theory tells us that we optimal length of a code word is given by $-\log(p)$, where $p$ is the exact probability that the code word occurs in the output. We therefore need not compute the actual code words, just their probabilities. For this to work, both the encoder and hypothetical decoder must know either the exact probability distribution or agree upon an approximation beforehand. Such approximation is often called a \textbf{prior} and is used to fix `prior knowledge' that does not have to be encoded explicitly. 
+The fictional encoder sequentially sends each symbol in the datastream to the `decoder' using a code word. Information theory tells us that we optimal length of a code word is given by $-\log(p)$\footnote{We calculate lengths in bits and therefore all logarithms in this paper have base 2.}, where $p$ is the exact probability that the code word occurs in the output. We therefore need not compute the actual code words, just their probabilities. For this to work, both the encoder and hypothetical decoder must know either the exact probability distribution or agree upon an approximation beforehand. Such approximation is often called a \textbf{prior} and is used to fix `prior knowledge' that does not have to be encoded explicitly. 
 
 % A good example of a prior that we will be using is the universal code for integers \cite{integerprior}. The corresponding length function $L_{\mathbb{N}}(n)$ gives the number of bits required to encode an arbitrary $n$ and is defined as $L_{\mathbb{N}}(n) = \log*(n) + \log(c_0)$ with $\log*(n) = \log(n) + \log \log(n) + \cdots$ and $c_0=2.865064$ to satisfy the Kraft-inequality. This code is obviously not uniform and assigns a longer code to a larger $n$. We will use this code to encode arbitrary integers.
 
@@ -220,7 +218,7 @@ To losslessly encode $A'$ we have to encode both $H$ and ${I}$ individually. As 
 \caption{Length computation for the different classes of matrices. The total length is the sum of the listed terms.}
 \label{tablelength}
 \vspace{3pt}
-\begin{tabular}{llcccc}
+\begin{tabular*}{\textwidth}{c @{\extracolsep{\fill}}llcccc}
 \toprule
  & Matrix  &  Bounds & \# Elements & Positions & Symbols \\ 
 \midrule
@@ -232,7 +230,7 @@ $L_p(X)$ & Pattern & $\log(MN)$ & \multicolumn{2}{c}{$L_{\mathbb{N}}\binom{M_XN_
 $L_1(H)$ & Model & \emph{N/A} & $L_N(|H|)$ & \emph{N/A} & $L_p(X \in H)$ \\
 $L_2({I})$ & Inst. mat.& \emph{constant} & $\log(MN)$ & \emph{implicit} & $L_{pp}({I})$\\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 Each length function has four terms. First we encode the total size of the matrix. Since we assume $MN$ to be known/constant, we can use this constant to define the uniform distribution $\frac{1}{MN}$, such that $\log{MN}$ encodes an arbitrary index of $A$. Next we encode the number of elements that are non-empty. For patterns this value is encoded together with the third term, namely the positions of the non-empty elements. We use the previously encoded $M_XN_X$ in the binominal function to enumerate the ways we can place the ($|X|$) elements onto a grid of $M_XN_X$. This gives us both \emph{how many} non-empties there are as well as \emph{where} they are. Finally the fourth term is the length of the actual symbols that encode the elements of matrix. In case we encode single elements of $A$, we simply assume that each unique value in $A$ has an equal possibility of occurring. For the instance matrix, which encodes symbols to patterns, the prequential code is used as demonstrated before. Notice that $L_N$ is the universal prior for integers\cite{univinteger} that can be used to encode integers on an arbitrary range.
