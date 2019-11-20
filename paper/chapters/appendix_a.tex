@@ -8,7 +8,6 @@
 
 To encode the instance matrix we use the \textbf{prequential plug-in code} \cite{ppcode}. The prequential plug-in code is defined for sequences of one item at a time and updates the probability of each item as it is encoded, such that the probability need not be known in advance. It has the favorable property of being asymptotically equal to the optimal code for large sequences. Say we want to encode all elements ${I}_i \in {I}$, we define:
 %\begin{definition}
-\label{plugin}
 \begin{align}
 P_{plugin}( y_i = {I}_i \mid y^{i-1} ) = \frac{|\{y \in y^{i-1} \mid y = {I}_i\}| + \epsilon }{\sum_{X \in H}|\{y \in y^{i-1} \mid y = X\}| + \epsilon}
 \end{align}

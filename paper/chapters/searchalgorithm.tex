@@ -83,7 +83,7 @@ After candidate search we have a set of candidates $C$ and their respective supp
 \end{split}
 \end{align}
 
-As we can see, the terms with $L_1$ are simplified to $- L_p(Z)$ and the model's length because $L_1$ is simply a summation of individual pattern lengths. The equation of $L_2$ requires the recomputation of the entire instance matrix' length, which is expensive considering we need to perform it for \emph{every candidate}, \emph{every iteration}. However, we can rework the function $L_{pp}$ in Equation (\ref{pp}) by observing that we can isolate the logarithms and generalize them into:
+As we can see, the terms with $L_1$ are simplified to $- L_p(Z)$ and the model's length because $L_1$ is simply a summation of individual pattern lengths. The equation of $L_2$ requires the recomputation of the entire instance matrix' length, which is expensive considering we need to perform it for \emph{every candidate}, \emph{every iteration}. However, we can rework the function $L_{pp}$ in Equation (\ref{plugin}) by observing that we can isolate the logarithms and generalize them into:
 \begin{align}
 	\log_G(a,b) = \log \frac{\Gamma(a+ b\epsilon)}{\Gamma(b\epsilon)} = \log \Gamma(a+ b\epsilon) - \log \Gamma(b\epsilon)
 \end{align} 
