@@ -4,21 +4,27 @@
 
 \section{Introduction}
 
-Frequent pattern mining is the subfield of data mining that aims to find and extract recurring substructures as a means of data analytics. These patterns can be any kind of datastructure, for example item sets (transactions), graphs (networks) and sequences (in time). So far, little research has been done in applying pattern mining to raster-based, tabular data or matrices. Patterns in these types of data can be more complex as elements cannot only coincide, but their geometric relation is also important. As the first contribution of this paper, we introduce exactly this problem, that we will call \textbf{geometric pattern mining} and formally introduce notation and theoretical constructions for this problem. Potential applications include analysis of (satellite) imagery, texture recognition and clustering of matrices.
+Frequent pattern mining \cite{fpmbook2014} is the well-known subfield of data mining that aims to find and extract recurring substructures from data, as a form of knowledge discovery. The generic concept of pattern mining has been instantiated for many different types of patterns, e.g., for item sets (in Boolean transaction data), subgraphs (in graphs/networks), and episodes (in sequences). So far, however, little research has been done on pattern mining for raster-based data, i.e., geometric matrices in which the row and column orders are fixed. The exception is geometric tiling \cite{gionis2004,tatti2012}, but that problem only considers tiles, i.e., rectangular-shaped patterns, in Boolean data.
 
-\begin{figure}[b]
+In this paper we generalise this setting in two important ways. First, we consider geometric patterns \emph{of any shape} that are geometrically connected, i.e., it must be possible to reach any element from any other element in a pattern by only traversing elements in that pattern. Second, we consider \emph{discrete geometric data} with any number of possible values (which includes the Boolean case). We call the resulting problem \emph{geometric pattern mining}.
+
+Figure~\ref{fig-example1} illustrates an example of geometric pattern mining.  Figure~\ref{fig-example1a} shows a $32 \times 24$ grayscale `geometric matrix', with each element in $[0,255]$, apparently filled with noise. If we take a closer look at all horizontal pairs of elements, however, we find that the pair $(146,11)$ is, amongst others, more prevalent than expected from `random noise' (Figure~\ref{fig-example1b}). If we would continue to try all combinations of elements that `stand out' from the background noise, we would eventually find four copies of the letter `I' set in 16 point Garamond Italic (Figure~\ref{fig-example1c}).
+
+The 35 elements that make up a single `I' in the example form what we call a \emph{geometric pattern} that occurs four times. Since these occurrences jointly cover a substantial part of the matrix, we could use this pattern to describe the matrix more succinctly than by 768 unrelated values. That is, we could describe it as 628 unrelated values plus pattern `I' at locations $(5,4), (11,11), (20,3), (25,10)$, hereby separating structure from accidental (noise) data. Since the latter requires less space, we have compressed the data. At the same time we have learned something about the data, namely that it contains four I's. This suggests that we can use compression as a criterion to find patterns that describe the data.
+
+\begin{figure}[t]
 \centering
 \begin{subfigure}[t]{0.35\textwidth}
 \centering
 \includegraphics[scale=.25]{img/Garamond-I_cropped.png}
-\caption{$32\times 24$ noise `matrix'}
+\caption{$32\times 24$ `geometric matrix'.}
 \label{fig-example1a}
 \end{subfigure}%
 ~
 \begin{subfigure}[t]{0.20\textwidth}
 \centering
 \includegraphics[scale=.25]{img/Garamond-I-highlight_cropped.png}
-\caption{Pair $(146,11)$}
+\caption{Pair $(146,11)$.}
 \label{fig-example1b}
 \end{subfigure}%
 ~
@@ -28,28 +34,20 @@ Frequent pattern mining is the subfield of data mining that aims to find and ext
 \caption{Pattern `I' occurs four times.}
 \label{fig-example1c}
 \end{subfigure}%
-\caption{Brief example of geometric pattern mining}
+\caption{Geometric pattern mining example. Each element is in $[0,255]$.}
+\label{fig-example1}
 \end{figure}  
 
-\subsubsection{Geometric Pattern Mining}
+\smallskip
+\noindent \textbf{Approach and contributions}. Out first contribution is that we introduce and formally define \emph{geometric pattern mining}, i.e., the problem of finding recurring local structure in geometric, discrete matrices. Although we restrict the scope of this paper to two-dimensional data, the generic concept applies to larger number of dimensions. Potential applications include the analysis of satellite imagery, texture recognition, and clustering.
 
-Geometric pattern mining is the problem of finding recurring local structure or \textbf{patterns} in matrices. It is different from graph mining, as a matrix is more rigid and each element has a fixed degree of connectedness/adjacency. It is also unrelated to linear algebra, other then using the term `matrix' and a comparable style of notation. Furthermore in this context, matrix elements can only be discrete, rows and columns have a fixed ordering and the semantics of a value is position-independent. Although the concept applies to any number of dimensions, we will limit the scope to two dimensional data from here on.
+We distinguish three subtypes of geometric patterns. The first concerns the discovery of \emph{exactly identical} patterns; the second concerns \emph{fault-tolerant} patterns, which can have noisy occurrences; the third concerns \emph{transformational} patterns, which are identical after some transformation (such as mirror, inverse, rotate, etc.). Each consecutive subtype makes the problem more expressive and hence more complex. Further, we distinguish the discovery of patterns from either an otherwise empty matrix, differently distributed noise, or similarly distributed noise, again in order of increasing difficulty.
 
-The problem of geometric pattern mining can roughly be divided into three classes. The first class consists of three subclasses: finding identical patterns in (1a) an otherwise empty (sparse) matrix, (1b) differently distributed noise and (1c) similarly distributed noise. The second class contains the same subclasses but adds that the patterns can also be overlaid with noise and are therefore not identical. The third class is also a continuation of the first class and requires that the patterns are identical after some optional transformation (such as mirror, inverse, rotate, etc.). These classes also represent an increasing difficulty level and serves as a rough benchmark for the performance of an algorithm. 
+As many geometric patterns can be found in a typical matrix, it is crucial to find a compact set of patterns that together describes the structure in the data well. We regard this as a model selection problem, where a model is defined by a set of patterns. Following our observation above, that geometric patterns can be used to compress the data, our second contribution is the formalisation of the model selection problem by using the \emph{Minimum Description Length (MDL) principle} \cite{rissanenmdl,grunwaldmdl}. Central to MDL is the notion that `learning' can be thought of as `finding regularity' and that regularity itself is a property of data that is exploited by \emph{compressing} said data. This matches very well with the goals of pattern mining, as a result of which the MDL principle has proven very successful for MDL-based pattern mining \cite{krimp,classy}.
 
-Let us demonstrate the problem of geometric pattern mining with a brief example. Figure \ref{fig-example1a} shows a $32 \times 24$ grayscale `matrix' filled with noise on the interval $[0;255]$. If we look at all horizontal pairs of elements, we find that the pair $(146,11)$ is, among others, statistically more prevalent than `random noise' suggests. If we would continue to try all combinations of elements that `stand out' from the background noise, Figure \ref{fig-example1c} shows that we will eventually find four copies of the letter `I' set in 16 point Garamond Italic.
-% Figure \ref{fig-example1b} highlights the locations where these pairs occur.
+Finally, the third
+As the second contribution of this paper, we present a geometric pattern mining algorithm that (1) is precise, (2) requires no parameters and (3) is tolerant to noise in the data, based on two-part MDL.
 
-The 35 elements that make up a single `I' in the example form a \textbf{pattern}. We can use this pattern to describe the matrix in an other way than `768 unrelated values'. For example, we could describe it as 628 unrelated values plus pattern `I' at locations $(5,4), (11,11), (20,3), (25,10)$, separating the structure from the accidental (noise) data. Since this requires less storage space than before, we have compressed the data. At the same time we have learned something about this data, namely that it contains four `hidden I's. 
+The problem that MDL solves first and foremost, is that of \emph{model selection}: given a multitude of explanations (models), select the one that fits the data best. In addition to this, MDL has also been demonstrated to be very effective in materialization of a specific model given the data. In this case, the model is predetermined and we want to find the parameters to fit the data. A similar problem class is solved in pattern mining: here the `parameters' are the discrete building blocks that make up patterns in the data. We will specifically look at a variant of MDL called two-part MDL. 
 
-%The example in the previous section belongs to class 1b: the structures are surrounded by noise, but their distribution clearly stands out.
-
-%Although we could intuitively solve the example, in reality it is much more complex. Is the `I' the best pattern we can find (and why), are there any more patterns and, most important, how do we find it (quickly) in an unknown and/or much larger dataset? After formally defining these problems and their contexts we will introduce VOUW, a novel geometric pattern mining algorithm based on the MDL principle. 
-
-\subsubsection{Datamining by Compression}
- 
-In recent years, a class of algorithms utilizing the \emph{Minimum Description Length (MDL) principle} \cite{rissanenmdl,grunwaldmdl} have become more and more common in the field of explanatory data analysis. Examples of such approaches include Krimp \cite{krimp} or more recently Classy \cite{classy}. The  MDL principle was first described by Rissanen in 1987 \cite{rissanenmdl} as a practical implementation of Kolmogorov Complexity \cite{kolmogorov}. Central to MDL is the notion that `learning' can be thought of as `finding regularity' and that regularity itself is a property of data that is exploited by \emph{compressing} said data. Therefore by compressing a dataset, we actually learn its structure --- how regular it is, where this regularity occurs, what it looks like --- at the same time. %Indeed MDL postulates that the most optimal compression (minimal description) of a given dataset provides the best description of that data. 
-
-The problem that MDL solves first and foremost, is that of \emph{model selection}: given a multitude of explanations (models), select the one that fits the data best. In addition to this, MDL has also been demonstrated to be very effective in materialization of a specific model given the data. In this case, the model is predetermined and we want to find the parameters to fit the data. A similar problem class is solved in pattern mining: here the `parameters' are the discrete building blocks that make up patterns in the data. We will specifically look at a variant of MDL called two-part MDL. As the second contribution of this paper, we present a geometric pattern mining algorithm that (1) is precise, (2) requires no parameters and (3) is tolerant to noise in the data, based on two-part MDL.
- 
 \end{document}
