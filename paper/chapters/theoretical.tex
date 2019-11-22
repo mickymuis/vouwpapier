@@ -218,17 +218,17 @@ To losslessly encode $A'$ we have to encode both $H$ and ${I}$ individually. As 
 \caption{Length computation for the different classes of matrices. The total length is the sum of the listed terms.}
 \label{tablelength}
 \vspace{3pt}
-\begin{tabular*}{\textwidth}{c @{\extracolsep{\fill}}llcccc}
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}}lclcl}
 \toprule
- && Matrix  &  Bounds & \# Elements & Positions & Symbols \\ 
+ & Matrix  &  Bounds & \# Elements & Positions & Symbols \\ 
 \midrule
 %$L_p(X)$ & Pattern & $L_0(MN)$ & \multicolumn{2}{c}{$L_{\mathbb{N}}(\binom{M_XN_X}{|X|})$} & $L_0(|S|)$\\
 %$L_1(H)$ & Model & \emph{N/A} & $L_N(|H|)$ & \emph{N/A} & $L_p(X \in H)$ \\
 %$L_2({I})$ & Inst. mat.& \emph{constant} & $L_0(MN)$ & \emph{implicit} & $L_{pp}({I})$\\
 %$L_3(E)$ & Error mat. & \emph{constant} & $L_0(MN)$ & $L_0(MN)$ & $L_0(|S|)$\\
-$L_p(X)$ && Pattern & $\log(MN)$ & \multicolumn{2}{c}{$L_{\mathbb{N}}\binom{M_XN_X}{|X|}$} & $\log(|S|)$\\
-$L_1(H)$ && Model & \emph{N/A} & $L_N(|H|)$ & \emph{N/A} & $L_p(X \in H)$ \\
-$L_2({I})$ && Instantiation matrix& \emph{constant} & $\log(MN)$ & \emph{implicit} & $L_{pp}({I})$\\
+$L_p(X)$ & Pattern & $\log(MN)$ & \multicolumn{2}{c}{$L_{\mathbb{N}}\binom{M_XN_X}{|X|}$} & $\log(|S|)$\\
+$L_1(H)$ & Model & \emph{N/A} & $L_N(|H|)$ & \emph{N/A} & $L_p(X \in H)$ \\
+$L_2({I})$ & Instantiation & \emph{constant} & $\log(MN)$ & \emph{implicit} & $L_{pp}({I})$\\
 \bottomrule
 \end{tabular*}
 \end{table}

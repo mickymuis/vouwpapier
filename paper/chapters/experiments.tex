@@ -146,10 +146,10 @@ Figure \ref{fig:snr} plots input SNR versus compression as well as precision/rec
 %\centering
 \caption{Influence of optimizations with respect to the baseline algorithm}
 \label{table:optimize}
-\begin{tabular*}{\textwidth}{c @{\extracolsep{\fill}}llcccccccc}
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}}lccccrrrr}
 \toprule
  & & \multicolumn{4}{c}{Precision/Recall} & \multicolumn{4}{c}{Average time}\\
- \cmidrule(r){3-6} \cmidrule(r){7-10} 
+ \cmidrule(l){3-6} \cmidrule(l){7-10} 
  Size & SNR & None & Local & Best-N & Both & None & Local & Best-N & Both \\
 \midrule
  256 & .05 & .98/.98 & .99/.99 & .93/.98 & .95/.99 & 29s & 1s & 2s & 1s \\
@@ -157,7 +157,7 @@ Figure \ref{fig:snr} plots input SNR versus compression as well as precision/rec
  512 & .05 & .98/.97 & .99/.99 & .87/.97 & .93/.98 & 5m 26s & 8s & 20s & 6s \\
   & .3 &.97/.93 & .99/.99 & .94/.91 & .97/.90 & 26m 52s & 2m 32s & 24s & 65s \\
  1024 & .05 & .97/.98 & .99/.99 & .84/.98 & .92/.96 & 21m 34s & 44s & 37s & 34s \\
- & .3 &.98/.98 & .99/.99 & .93/.96 & .98/.97 & 116m & 7m 31s & 1m 49s & 3m 31s \\
+ & .3 &.98/.98 & .99/.99 & .93/.96 & .98/.97 & 116m 4s & 7m 31s & 1m 49s & 3m 31s \\
 \bottomrule
 \end{tabular*}
 %\caption*{$^1$ signal-to-noise ratio of $.05$, $^2$ signal-to-noise ratio of $.3$}
