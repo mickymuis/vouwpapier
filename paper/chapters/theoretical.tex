@@ -8,14 +8,14 @@
 
 %In this subsection we will introduce a method for describing and decomposing tabular or matrix-like data. It is this concise notation that allows us to reason about what one can and cannot expect to find from a set of data and what this data could look like. In later subsections we will use these tools to gradually connect to the MDL principle and finally to a practical search algorithm.
 
-We define geometric pattern mining on bounded, discrete and two-dimensional raster-based data. We represent this data as an $M\times N$ matrix $A$ whose rows and columns are finite and in a fixed ordering (i.e. reordering rows and columns semantically alters the matrix). For elements $a_{i,j}$, where row $i$ is on $[0;N)$ and column $j$ is on $[0;M)$, holds that $a_{i,j} \in S$, the finite set of symbols over $A$. %We will denote $A$ as a matrix because of the convenience of the linear algebra notation\footnote{In any practical application however, $A$ will not represent a system of linear equations but rather hold some form of sampled data that can be placed on a grid.}
+We define geometric pattern mining on bounded, discrete and two-dimensional raster-based data. We represent this data as an $M\times N$ matrix $A$ whose rows and columns are finite and in a fixed ordering (i.e., reordering rows and columns semantically alters the matrix). Each element $a_{i,j} \in S$, where row $i \in [0;N)$, column $j \in [0;M)$, and $S$ is a finite set of symbols, i.e., the alphabet of $A$. %We will denote $A$ as a matrix because of the convenience of the linear algebra notation\footnote{In any practical application however, $A$ will not represent a system of linear equations but rather hold some form of sampled data that can be placed on a grid.}
 
 \begin{figure}[b]
 \input{"figures/decomposition_example.tex"}
 \label{example1}
 \end{figure}
 
-According to MDL, the shortest (optimal) description of $A$ reveals all structure of $A$ in the most succinct way possible and we approximate this optimal description through the compression of the original data. This optimal description $A'$ is only optimal if we can unambiguously reconstruct $A$ from it and nothing more --- the compression is both minimal and lossless. Intuitively compression means defining $A$ using as few building blocks as possible. We illustrate this in Figure \ref{example1}. Given the matrix $A$ we decompose it in patterns, denoted $X$ and $Y$. The set of all these patterns is the \textbf{model} of a $A$, denoted $H_A$. In order to reconstruct $A$ from this model, we alse need a mapping from the $H_A$ back to $A$. This mapping represents in what MDL calls the \textbf{the data given the model $H_A$}. In this context we think of it as `instructions' of how to reconstruct $A$. Let us call the set of all instructions required to rebuild $A$ from $H_A$ the \textbf{instantiation} of $H_A$. It is denoted by ${I}_A$ in the example.  The result is a notation that allows us to express matrix $A$ as if decomposed into sets of local and global spatial information, which we will now describe in more detail.
+According to the MDL principle, the shortest (optimal) description of $A$ reveals all structure of $A$ in the most succinct way possible. This optimal description is only optimal if we can unambiguously reconstruct $A$ from it and nothing more---the compression is both minimal and lossless. Figure~\ref{example1} illustrates how an example matrix could be succinctly described using patterns: matrix $A$ is decomposed into patterns $X$ and $Y$. A set of such patterns constitutes the \textbf{model} for a matrix $A$, denoted $H_A$ (or $H$ for short when $A$ is clear from the context). In order to reconstruct $A$ from this model, we also need a mapping from the $H_A$ back to $A$. This mapping represents what (two-part) MDL calls the \textbf{the data given the model $H_A$}. In this context we can think of this as a set of all instructions required to rebuild $A$ from $H_A$, which we call the \textbf{instantiation} of $H_A$ and is denoted by ${I}$ in the example. These concepts allow us to express matrix $A$ as a decomposition into sets of local and global spatial information, which we will next describe in more detail.
 
 % Notice how $I_A$ essentially tells us where in $A$ each pattern from $H_A$ was originally located.
 
@@ -23,7 +23,7 @@ According to MDL, the shortest (optimal) description of $A$ reveals all structur
 
 
 \subsection{Patterns and Instances}
-\noindent $\triangleright$ \emph{We define a \textbf{pattern} as a $M_X\times N_X$ submatrix $X$ of the original matrix $A$. Elements of this submatrix may be $\cdot$, the empty element, which gives us the ability to cut-out any irregular-shaped part of $A$. We additionally require the elements of $X$ to be adjacent (horizontal, vertical or diagonal) to at least one non-empty element and that no rows and columns are empty.}
+\noindent $\triangleright$ \emph{We define a \textbf{pattern} as an $M_X\times N_X$ submatrix $X$ of the original matrix $A$. Elements of this submatrix may be $\cdot$, the empty element, which gives us the ability to cut-out any irregular-shaped part of $A$. We additionally require the elements of $X$ to be adjacent (horizontal, vertical or diagonal) to at least one non-empty element and that no rows and columns are empty.}
 %While this limits the amount of possible patterns somewhat, it will later on also reduce the computational effort dramatically.
 %We will now define a pattern to be the smallest submatrix to completely contain all elements of $X$.
 
@@ -36,14 +36,14 @@ According to MDL, the shortest (optimal) description of $A$ reveals all structur
 %\end{definition}
 \smallskip
 
-From this definition, the dimensions $M_X\times N_X$ give the smallest rectangle around $X$ (the \emph{bounding box)}. We also define the cardinality $|X|$ of $X$ as the number of non-empty elements. We call a pattern $X$ with $|X|=1$ a \textbf{singleton pattern}, i.e. a pattern containing exactly one element of $A$. %\footnote{We will often slightly abuse notation by using single-index elements or using set notation for any matrix. For instance, when we write $x_i \in X$, we mean that $x_i$ is the $i$-th non-empty element in $X$ with $1\leq i \leq |X|$. By convention we will always use row-major ordering in these cases.}
+From this definition, the dimensions $M_X\times N_X$ give the smallest rectangle around $X$ (the \emph{bounding box)}. We also define the cardinality $|X|$ of $X$ as the number of non-empty elements. We call a pattern $X$ with $|X|=1$ a \textbf{singleton pattern}, i.e., a pattern containing exactly one element of $A$. %\footnote{We will often slightly abuse notation by using single-index elements or using set notation for any matrix. For instance, when we write $x_i \in X$, we mean that $x_i$ is the $i$-th non-empty element in $X$ with $1\leq i \leq |X|$. By convention we will always use row-major ordering in these cases.}
 
 Each pattern contains a special \textbf{pivot} element: %
 %\begin{definition}
 $pivot(X)$ is the first non-empty element of $X$. % in the first non-empty column of the first (non-empty) row of $X$.
 %\end{definition}
 \noindent
-A pivot can be thought of as a fixed point in $X$ which we can use to position its elements in relation to $A$. This translation, or \textbf{offset}, is a tuple ${q}=(i,j)$ that is on the same domain as an index in $A$. We realize this translation by placing all elements of $X$ on an empty $M\times X$ size matrix in such that the pivot element is at $(i,j)$. We formalize this in the \textbf{instantiation operator} $\otimes$:
+A pivot can be thought of as a fixed point in $X$ which we can use to position its elements in relation to $A$. This translation, or \textbf{offset}, is a tuple ${q}=(i,j)$ that is on the same domain as an index in $A$. We realise this translation by placing all elements of $X$ in an empty $M\times X$ size matrix such that the pivot element is at $(i,j)$. We formalise this in the \textbf{instantiation operator} $\otimes$:
 
 \smallskip
 \noindent $\triangleright$
@@ -54,7 +54,7 @@ A pivot can be thought of as a fixed point in $X$ which we can use to position i
 \smallskip
 
 %So according to this definition $\otimes$ adds `padding' around the elements of a pattern to align its pivot to a certain offset $(i,j)$. 
-Obviously this does not yield a valid result for an arbitrary offset $(i,j)$. We want to limit ourselves to the space of pattern instances that are actually valid in relation to matrix $A$. Therefore two simple constraints are needed: (1) an instance must be \textbf{well-defined}: \emph{placing $\mathrm{pivot}(X)$ is at index $(i,j)$ results in an instance that contains all elements of $X$, and (2) elements of instances cannot overlap, meaning each element of $A$ should be described at most once.} This allows for a description that is both unambiguous and minimal.
+Since this does not yield valid results for arbitrary offsets $(i,j)$, we enforce two constraints: (1) an instance must be \textbf{well-defined}: placing $\mathrm{pivot}(X)$ at index $(i,j)$ must result in an instance that contains all elements of $X$, and (2) elements of instances cannot \emph{overlap}, i.e., each element of $A$ can be described only once. %This allows for a description that is both unambiguous and minimal.
 
 \smallskip
 %\begin{definition}
@@ -63,7 +63,7 @@ Obviously this does not yield a valid result for an arbitrary offset $(i,j)$. We
 %\end{definition}
 \smallskip
 
-From here on we will use the same letter in lower case to denote an arbitrary instance of a pattern, e.g. $x = X \otimes {q}$ when the exact value of ${q}$ is unimportant. Since instances are simply patterns projected on an $M\times N$ matrix, we can reverse $\otimes$ by removing all completely empty rows and columns:
+From here on we will use the same letter in lower case to denote an arbitrary instance of a pattern, e.g., $x = X \otimes {q}$ when the exact value of ${q}$ is unimportant. Since instances are simply patterns projected onto an $M\times N$ matrix, we can reverse $\otimes$ by removing all completely empty rows and columns:
 
 \smallskip
 \noindent $\triangleright$
@@ -77,9 +77,9 @@ We briefly introduced the instantiation $I$ as a set of `instructions' of where 
 \smallskip
 %\begin{definition}
 \noindent $\triangleright$
-\emph{Given the set of patterns $H$, the \textbf{instantiation (matrix)} ${I}$ is an incomplete $M\times N$ matrix such that ${I}_{i,j} \in H \cup \{\cdot\}$ for all $(i,j)$. For all non-empty elements ${I}_{i,j}$ it holds that ${I}_{i,j} \otimes (i,j)$ is a non-overlapping instance of ${I}_{i,j}$ in $A$.}
+\emph{Given a set of patterns $H$, the \textbf{instantiation (matrix)} ${I}$ is an $M\times N$ matrix such that ${I}_{i,j} \in H \cup \{\cdot\}$ for all $(i,j)$, where $\cdot$ denotes the empty element. For all non-empty ${I}_{i,j}$ it holds that ${I}_{i,j} \otimes (i,j)$ is a non-overlapping instance of ${I}_{i,j}$ in $A$.}
 %\end{definition}
-\smallskip
+%\smallskip
 
 %The above definition creates the interesting proposition that the offset to each instance is unique. We provide a sketch proof in Appendix \ref{appendix_a} in \cite{archive}.
 %Given that a pattern's pivot is placed exactly at one offset and that instances must be non-overlapping, makes this indeed believable. Later when we inductively define the set $\mathcal{I}$ of all instantiation matrices, this will be shown to be true more formally. 
@@ -122,9 +122,10 @@ One possibility for solving this problem is to let the MDL equation decide wheth
 \label{constructpatterns}
 %Patterns can be joined to create increasingly large patterns and, as we will later see, this concept forms the basis of the search algorithm. However, two patterns could be joined in any different number of ways.
 
-Patterns can be constructed by joining smaller patterns in a bottom-up fashion. We can define the exact way two patterns should be joined by enumerating the distance of their respective pivots. To limit the possibilities to patterns relevant to $A$, instances can be used as an intermediate step. As Figure \ref{example2} demonstrates, we can use a simple element-wise matrix addition to sum two instances and use $\oslash$ to obtain a joined pattern. Here we start by instantiating $X$ and $Y$ with offsets $(1,0)$ and $(1,1)$ respectively. We add the resulting ${x}$ and ${y}$ to obtain $\oslash{z}$, the union of $X$ and $Y$ with relative offset $(1,1)-(1,0)=(0,1)$. %We formally describe this mechanism in Theorem \ref{fundamental}. As we will see later, this will become the fundamental operation of our algorithm.
+Larger patterns can be naturally constructed by joining (or merging) smaller patterns in a bottom-up fashion. %We can define the exact way two patterns should be joined by enumerating the distance of their respective pivots. 
+To limit the considered patterns to those relevant to $A$, instances can be used as an intermediate step. As Figure \ref{example2} demonstrates, we can use a simple element-wise matrix addition to sum two instances and use $\oslash$ to obtain a joined pattern. Here we start by instantiating $X$ and $Y$ with offsets $(1,0)$ and $(1,1)$, respectively. We add the resulting ${x}$ and ${y}$ to obtain $\oslash{z}$, the union of $X$ and $Y$ with relative offset $(1,1)-(1,0)=(0,1)$. %We formally describe this mechanism in Theorem \ref{fundamental}. As we will see later, this will become the fundamental operation of our algorithm.
 
-\begin{figure}[b]
+\begin{figure}[t]
 \centering
 \input{"figures/pattern_construction.tex"}
 \label{example2}
@@ -136,15 +137,14 @@ Patterns can be constructed by joining smaller patterns in a bottom-up fashion. 
 
 %Notice that this sum has the limitation that two instances can only be summed if they do not overlap. While this is a serious limitation, we will show in the next subsection that it is not of any practical relevance.
 
-
-\subsubsection{The Sets $\mathcal{H}_A$ and $\mathcal{I}_A$}\label{thesetH}
-
+\smallskip
+\noindent \textbf{The Sets $\mathcal{H}_A$ and $\mathcal{I}_A$}.\label{thesetH}
 %In the previous subsections we have given a means to describe a matrix $A$ in a different way, namely by means of patterns and instances. If we succeed in describing $A$, using our notation, in a more concise way than just $A$ itself, we have learned something about the local and global structure of $A$ and perhaps even about anomalies or noisy values. In this context, we see a clear relation the MDL principle and learning. 
 %In order to find a short(er) description, we will first have to define our search space and the way solutions are to be constructed. 
+We define the \textbf{model class} $\mathcal{H}$ as the set of all possible models for all possible inputs. Without any prior knowledge, this would be the search space. To simplify the search, however, we only consider the more bounded subset $\mathcal{H}_A$ of all possible models for $A$, and $\mathcal{I}_A$, the set of all possible instantiations for these models. To this end we first define $H_A^0$ to be the model with only singleton patterns, i.e., $H_A^0=S$, and denote its corresponding instantiation matrix by ${I}_A^0$. Given that each element of ${I}_A^0$ must correspond to exactly one element of $A$ in $H_A^0$, we see that each ${I}_{i,j} = a_{i,j}$ and so we have ${I}_A^0 = A$. 
 
-We define the \textbf{model class} $\mathcal{H}$, the set of all possible models for all possible inputs. Without any prior knowledge, this is the search space of our algorithm. We will first look at a more bounded subset $\mathcal{H}_A$ of all possible models for $A$, and $\mathcal{I}_A$, the set of all possible instantiations to these models. We will also take $H_A^0$ to be the model with only singleton patterns. As singletons are just individual elements of $A$, we can simply say that $H_A^0=S$. The instantiation matrix corresponding to $H_A^0$ is denoted ${I}_A^0$. Given that each element of this matrix must correspond to exactly one element of $A$ in $H_A^0$, we see that each ${I}_{i,j} = a_{i,j}$ and so ${I}_A^0$ is equal to $A$. 
-
-Using $H_A^0$ and ${I}_A^0$ as base cases we can now inductively define the set $\mathcal{I}_A$: % of all instantiations of all models over $A$:\\
+Using $H_A^0$ and ${I}_A^0$ as base cases we can now inductively define $\mathcal{I}_A$: % of all instantiations of all models over $A$:\\
+\vspace{-0.2\baselineskip}
 \begin{description}[labelwidth=\widthof{\bfseries By induction}]
 \item[Base case] ${I}_A^0 \in \mathcal{I}_A$
 \item[By induction] If ${I}$ is in $\mathcal{I}_A$ then take any pair ${I}_{i,j},{I}_{k,l} \in {I}$ such that $(i,j)\leq(k,l)$ in lexicographical order. Then the set ${I}'$ is also in $\mathcal{I}_A$, providing ${I}'$ equals ${I}$ except:
@@ -155,10 +155,11 @@ Using $H_A^0$ and ${I}_A^0$ as base cases we can now inductively define the set 
 %{I}_{m,n}' &:= I_{m,n} \ \forall (m,n) \neq (i,j) \ \land \ (m,n) \neq (k,l)
 \end{align*}
 \end{description}
+\vspace{-0.2\baselineskip}
 
-\noindent This shows we can add any two instances together, which are by definition always non-overlapping and thus valid in $A$, in any order and obtain an element of $\mathcal{I}_A$. Eventually this results in just one big instance that is equal to $A$. Note that when we take two elements ${I}_{i,j},{I}_{k,l} \in {I}$ we force $(i,j)\leq(k,l)$, not only to eliminate different routes to the same instance matrix, but also such that the pivot of the new pattern coincides with ${I}_{i,j}$. We can then leave ${I}_{k,l}$ empty.
+\noindent This shows we can add any two instances together, in any order, as they are by definition always non-overlapping and thus valid in $A$, and hereby obtain another element of $\mathcal{I}_A$. Eventually this results in just one big instance that is equal to $A$. Note that when we take two elements ${I}_{i,j},{I}_{k,l} \in {I}$ we force $(i,j)\leq(k,l)$, not only to eliminate different routes to the same instance matrix, but also so that the pivot of the new pattern coincides with ${I}_{i,j}$. We can then leave ${I}_{k,l}$ empty.
 
-The construction of $\mathcal{I}_A$ also implicitly defines $\mathcal{H}_A$. While this may seem odd --- defining models for instantiations instead of the other way around --- note that there is no unambiguous way to find one instantiation for a given model. Instead we find the following definition by applying the inductive construction:
+The construction of $\mathcal{I}_A$ also implicitly defines $\mathcal{H}_A$. While this may seem odd---defining models for instantiations instead of the other way around---note that there is no unambiguous way to find one instantiation for a given model. Instead we find the following definition by applying the inductive construction:
 % \footnote{Notice that this is a problem for any real-world implementation. We will describe a heuristic to derive instantiation matrices from model and data in the next section.}.
 %
 %\noindent $\triangleright$
@@ -192,7 +193,7 @@ The construction of $\mathcal{I}_A$ also implicitly defines $\mathcal{H}_A$. Whi
 
 \subsection{Encoding Models and Instances}
 
-From all parametrized models in $\mathcal{H}_A$ we want to select (approximate) the model that describes $A$ best. We use two-part MDL to quantify how well a given model and instantiation matrix fit $A$. Two-part MDL tells us to minimize the sum of $L_1(H_A) + L_2(A|H_A)$, two functions that give the length of the model and the length of `the data given the model', respectively. In this context, the model is the set of patterns $H_A$ and the data given the model is $I_A$, the accidental information needed to reconstruct the data from $H_A$.
+From all parametrised models in $\mathcal{H}_A$ we want to select (approximate) the model that describes $A$ best. We use two-part MDL to quantify how well a given model and instantiation matrix fit $A$. Two-part MDL tells us to minimize the sum of $L_1(H_A) + L_2(A|H_A)$, two functions that give the length of the model and the length of `the data given the model', respectively. In this context, the model is the set of patterns $H_A$ and the data given the model is $I_A$, the accidental information needed to reconstruct the data from $H_A$.
 
 In order to compute their lengths, we need to decide on a way to encode $H$ and $I$ first. This encoding is of great influence on the length functions and therefore on the ability to accurately quantify the fit of a given $H$ and $I$ to $A$. Although the decision for this encoding is obviously prone to bias, practice shows that good results can be had once certain conditions are met: (1) all data is encoded (lossless) and (2) the encoding is as concise as possible (nothing but the data is encoded). Based on these conditions we give length functions for pattern sets and instantiations, but we do not actually need to encode them. 
  
@@ -204,8 +205,8 @@ The fictional encoder sequentially sends each symbol in the datastream to the `d
 
 %Lastly, in addition to $L_{\mathbb{N}}$ and $L_{pp}$ we also define the length of the uniform distribution $L_0(n)=log(n)$. That is, when $n$ items have equal probability they all receive a code of equal length $log(n)$.
 
-\subsubsection{The length function for incomplete matrices.}
-
+\smallskip
+\noindent \textbf{The length function for incomplete matrices}.
 To losslessly encode $A'$ we have to encode both $H$ and ${I}$ individually. As both instances and patterns are both matrices it is tempting to utilize the same length function for both. Empirical evidence has shown that this is not a good idea though. For example, we do not consider certain values such as the size of the instance matrix because it is constant, however, the size of each individual pattern is not. We therefore have to construct a different length function for each type of matrix. These are listed in Table \ref{tablelength} When encoding $I$, we observe that it contains each pattern $X\in H$ multiple times, given by the \textbf{usage} of $X$. Using \textbf{prequential plug-in code} \cite{grunwaldmdl} to encode $I$ enables us to omit encoding these usages separately, which would create unwanted bias. Prequential plug-in code gives us the following length function for $I$. We elaborate on the derivation of this equation in Appendix \ref{appendix_a}.
 \begin{align}
 \label{plugin}
