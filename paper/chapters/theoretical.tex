@@ -166,7 +166,7 @@ The construction of $\mathcal{I}_A$ also implicitly defines $\mathcal{H}_A$. Whi
 %\begin{definition}
 %\emph{The set $\mathcal{H}_A$ of all models over $A$ is given by:}
 \begin{align}
-\mathcal{H}_A=\big\{\{\oslash({I}) \ | \ {I} \in {I} \} \ \big | \ {I} \in \mathcal{I}_A \big\}.
+\mathcal{H}_A=\big\{\{\oslash({x}) \ | \ {x} \in {I} \} \ \big | \ {I} \in \mathcal{I}_A \big\}.
 \end{align}
 %\end{definition}
 
@@ -193,21 +193,24 @@ The construction of $\mathcal{I}_A$ also implicitly defines $\mathcal{H}_A$. Whi
 
 \subsection{Encoding Models and Instances}
 
-From all parametrised models in $\mathcal{H}_A$ we want to select (approximate) the model that describes $A$ best. We use two-part MDL to quantify how well a given model and instantiation matrix fit $A$. Two-part MDL tells us to minimize the sum of $L_1(H_A) + L_2(A|H_A)$, two functions that give the length of the model and the length of `the data given the model', respectively. In this context, the model is the set of patterns $H_A$ and the data given the model is $I_A$, the accidental information needed to reconstruct the data from $H_A$.
+From all models in $\mathcal{H}_A$ we want to select the model that describes $A$ best. Two-part MDL \cite{grunwaldmdl} tells us to choose that model that minimises the sum of  $L_1(H_A) + L_2(A|H_A)$, where $L_1$ and $L_2$ are two functions that give the length of the model and the length of `the data given the model', respectively. In this context, the data given the model is given by $I_A$, which represents the accidental information needed to reconstruct the data $A$ from $H_A$.
 
-In order to compute their lengths, we need to decide on a way to encode $H$ and $I$ first. This encoding is of great influence on the length functions and therefore on the ability to accurately quantify the fit of a given $H$ and $I$ to $A$. Although the decision for this encoding is obviously prone to bias, practice shows that good results can be had once certain conditions are met: (1) all data is encoded (lossless) and (2) the encoding is as concise as possible (nothing but the data is encoded). Based on these conditions we give length functions for pattern sets and instantiations, but we do not actually need to encode them. 
+In order to compute their lengths, we need to decide how to encode $H_A$ and $I$. As this encoding is of great influence on the outcome, we should adhere to the conditions that follow from MDL theory: (1) the model and data must be encoded losslessly; and (2) the encoding should be as concise as possible, i.e., it should be optimal. Note that for the purpose of model selection we only need the length functions; we do not need to actually encode the patterns or data.
+
  
 %To be able to compute the length of a given code word we must know the probability of that word occurring in our data. This information must also be available to the hypothetical decoder as otherwise the encoding is not lossless. Sometimes this is not practical as we do not know the probability distribution beforehand. For example, given an arbitrary encoded $A'$, we do not know the probability that each pattern occurs in the instantiation matrix. We could also encode this information and pass it to the decoder separately, but this is generally a bad idea. It cannot be stressed enough that the leanest encoding gives us the most information about the true compression ratio we achieve, while bookkeeping and meta-information only incur an undue bias. 
 
-The fictional encoder sequentially sends each symbol in the datastream to the `decoder' using a code word. Information theory tells us that we optimal length of a code word is given by $-\log(p)$\footnote{We calculate lengths in bits and therefore all logarithms in this paper have base 2.}, where $p$ is the exact probability that the code word occurs in the output. We therefore need not compute the actual code words, just their probabilities. For this to work, both the encoder and hypothetical decoder must know either the exact probability distribution or agree upon an approximation beforehand. Such approximation is often called a \textbf{prior} and is used to fix `prior knowledge' that does not have to be encoded explicitly. 
+%The fictional encoder sequentially sends each symbol in the datastream to the `decoder' using a code word. Information theory tells us that we optimal length of a code word is given by $-\log(p)$\footnote{We calculate lengths in bits and therefore all logarithms in this paper have base 2.}, where $p$ is the exact probability that the code word occurs in the output. We therefore need not compute the actual code words, just their probabilities. For this to work, both the encoder and hypothetical decoder must know either the exact probability distribution or agree upon an approximation beforehand. Such approximation is often called a \textbf{prior} and is used to fix `prior knowledge' that does not have to be encoded explicitly. 
 
 % A good example of a prior that we will be using is the universal code for integers \cite{integerprior}. The corresponding length function $L_{\mathbb{N}}(n)$ gives the number of bits required to encode an arbitrary $n$ and is defined as $L_{\mathbb{N}}(n) = \log*(n) + \log(c_0)$ with $\log*(n) = \log(n) + \log \log(n) + \cdots$ and $c_0=2.865064$ to satisfy the Kraft-inequality. This code is obviously not uniform and assigns a longer code to a larger $n$. We will use this code to encode arbitrary integers.
 
 %Lastly, in addition to $L_{\mathbb{N}}$ and $L_{pp}$ we also define the length of the uniform distribution $L_0(n)=log(n)$. That is, when $n$ items have equal probability they all receive a code of equal length $log(n)$.
 
 \smallskip
-\noindent \textbf{The length function for incomplete matrices}.
-To losslessly encode $A'$ we have to encode both $H$ and ${I}$ individually. As both instances and patterns are both matrices it is tempting to utilize the same length function for both. Empirical evidence has shown that this is not a good idea though. For example, we do not consider certain values such as the size of the instance matrix because it is constant, however, the size of each individual pattern is not. We therefore have to construct a different length function for each type of matrix. These are listed in Table \ref{tablelength} When encoding $I$, we observe that it contains each pattern $X\in H$ multiple times, given by the \textbf{usage} of $X$. Using \textbf{prequential plug-in code} \cite{grunwaldmdl} to encode $I$ enables us to omit encoding these usages separately, which would create unwanted bias. Prequential plug-in code gives us the following length function for $I$. We elaborate on the derivation of this equation in Appendix \ref{appendix_a}.
+\noindent \textbf{Code length functions}.
+Although the patterns in $H$ and instantiation matrix $I$ are all matrices, they have different characteristics and thus require different encodings. For example, the size of $I$ is constant and can be ignored, while the sizes of the patterns vary and should be encoded. Hence we construct different length functions\footnote{We calculate code lengths in bits and therefore all logarithms have base 2.} for the different components of $H$ and $I$, as listed in Table \ref{tablelength}. 
+
+When encoding $I$, we observe that it contains each pattern $X\in H$ multiple times, given by the \textbf{usage} of $X$. Using the \textbf{prequential plug-in code} \cite{grunwaldmdl} to encode $I$ enables us to omit encoding these usages separately, which would create unwanted bias. The prequential plug-in code gives us the following length function for $I$. We use $\epsilon = 0.5$ and elaborate on its derivation in Appendix~\ref{appendix_a}\footnote{The appendix is available on \url{https://arxiv.org/abs/1911.09587}.}.
 \begin{align}
 \label{plugin}
 	L_{pp}({I}\mid P_{plugin}) &= -\sum^{|H|}_{X_i \in h} \left[ \log \frac{\Gamma(\mathrm{usage}(X_i)+\epsilon)}{\Gamma(\epsilon)}\right] + \log \frac{\Gamma(|{I}| + \epsilon|H|)}{\Gamma(\epsilon|H|)}
@@ -216,7 +219,7 @@ To losslessly encode $A'$ we have to encode both $H$ and ${I}$ individually. As 
 \begin{table}[t]
 \centering
 \vspace{-\baselineskip}
-\caption{Length computation for the different classes of matrices. The total length is the sum of the listed terms.}
+\caption{Code length definitions. Each row specifies the code length given by the first column as the sum of the remaining terms.}
 \label{tablelength}
 \vspace{3pt}
 \begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}}lclcl}
@@ -227,14 +230,14 @@ To losslessly encode $A'$ we have to encode both $H$ and ${I}$ individually. As 
 %$L_1(H)$ & Model & \emph{N/A} & $L_N(|H|)$ & \emph{N/A} & $L_p(X \in H)$ \\
 %$L_2({I})$ & Inst. mat.& \emph{constant} & $L_0(MN)$ & \emph{implicit} & $L_{pp}({I})$\\
 %$L_3(E)$ & Error mat. & \emph{constant} & $L_0(MN)$ & $L_0(MN)$ & $L_0(|S|)$\\
-$L_p(X)$ & Pattern & $\log(MN)$ & \multicolumn{2}{c}{$L_{\mathbb{N}}\binom{M_XN_X}{|X|}$} & $\log(|S|)$\\
-$L_1(H)$ & Model & \emph{N/A} & $L_N(|H|)$ & \emph{N/A} & $L_p(X \in H)$ \\
+$L_p(X)$ & Pattern & $\log(MN)$ & \multicolumn{2}{c}{$L_{\mathbb{N}}\binom{M_XN_X}{|X|}$} & $|X| \log(|S|)$\\
+$L_1(H)$ & Model & \emph{N/A} & $L_N(|H|)$ & \emph{N/A} & $\sum_{X \in H} L_p(X)$ \\
 $L_2({I})$ & Instantiation & \emph{constant} & $\log(MN)$ & \emph{implicit} & $L_{pp}({I})$\\
 \bottomrule
 \end{tabular*}
 \end{table}
 
-Each length function has four terms. First we encode the total size of the matrix. Since we assume $MN$ to be known/constant, we can use this constant to define the uniform distribution $\frac{1}{MN}$, such that $\log{MN}$ encodes an arbitrary index of $A$. Next we encode the number of elements that are non-empty. For patterns this value is encoded together with the third term, namely the positions of the non-empty elements. We use the previously encoded $M_XN_X$ in the binominal function to enumerate the ways we can place the ($|X|$) elements onto a grid of $M_XN_X$. This gives us both \emph{how many} non-empties there are as well as \emph{where} they are. Finally the fourth term is the length of the actual symbols that encode the elements of matrix. In case we encode single elements of $A$, we simply assume that each unique value in $A$ has an equal possibility of occurring. For the instance matrix, which encodes symbols to patterns, the prequential code is used as demonstrated before. Notice that $L_N$ is the universal prior for integers\cite{univinteger} that can be used to encode integers on an arbitrary range.
+Each length function has four terms. First we encode the total size of the matrix. Since we assume $MN$ to be known/constant, we can use this constant to define the uniform distribution $\frac{1}{MN}$, so that $\log{MN}$ encodes an arbitrary index of $A$. Next we encode the number of elements that are non-empty. For patterns this value is encoded together with the third term, namely the positions of the non-empty elements. We use the previously encoded $M_XN_X$ in the binominal function to enumerate the ways we can place the $|X|$ elements onto a grid of $M_XN_X$. This gives us both \emph{how many} non-empties there are as well as \emph{where} they are. Finally the fourth term is the length of the actual symbols that encode the elements of matrix. In case we encode single elements of $A$, we assume that each unique value in $A$ occurs with equal probability; without other prior knowledge, using the uniform distribution has minimax regret and is therefore optimal. For the instance matrix, which encodes symbols to patterns, the prequential code is used as demonstrated before. Note that $L_N$ is the universal prior for the integers \cite{univinteger}, which can be used for arbitrary integers and penalises larger integers.
 
 %\subsubsection{Geometries and the error matrix}
 
