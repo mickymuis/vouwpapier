@@ -22,7 +22,7 @@ The \textbf{support} of a candidate, written $\mathrm{sup}(X,Y,\delta)$, tells h
 %\subsubsection{Self-Overlap}
 \smallskip \noindent \textbf{Self-overlap}. Self-overlap happens for candidates of the form $(X,X,\delta)$. In this case, too many or too few copies may be counted. Take for example a straight line of five instances of $X$. There are four unique pairs of two $X$'s, but only two can be merged at a time, in three different ways. Therefore, when considering candidates of the form $(X,X,\delta)$, we also compute an \emph{overlap coefficient}. This coefficient $e$ is given by $e = (2N_X+1)\delta_i + \delta_j + N_X$, which essentially transforms $\delta$ into a one-dimensional coordinate space of all possible ways that $X$ could be arranged \emph{after} and \emph{adjacent} to itself. For each instance $x_1$ a vector of bits $V(x)$ is used to remember if we have already encountered a combination $x_1,x_2$ with coefficient $e$, such that we do not count a combination $x_2,x_3$ with an equal $e$. This eliminates the problem of incorrect counting due to self-overlap.
 
-\begin{figure*}[t!]
+\begin{figure*}[t]
 \vspace{-\baselineskip}
 \begin{minipage}[t]{.45\textwidth}
 	\begin{algorithm}[H]
@@ -110,29 +110,26 @@ In the second part of the algorithm, listed in Algorithm~\ref{alg:vouw}, we sele
 \label{improvements}
 %\subsubsection{Local Search}
 
-We next describe two improvements on the baseline algorithm. 
+We next describe two (independent) improvements on the baseline algorithm. 
 
 \smallskip
-\noindent \textbf{Local search}. Given a matrix containing some pattern $X$, the algorithm can arrive to $X$ in different ways. Exploring these combinatorics can tell us how efficiently the algorithm arrives at $X$. By definition we know that the fundamental operation is to combine exactly two patterns on each step. Given this, the number of steps in which $X$ can be constructed lies between $\log_2|X|$ and $|X|-1$. 
-
+\noindent \textbf{Local search}. %Given a matrix containing some pattern $X$, the algorithm can arrive to $X$ in different ways. Exploring these combinatorics can tell us how efficiently the algorithm arrives at $X$. By definition we know that the fundamental operation is to combine exactly two patterns on each step. Given this, the number of steps in which $X$ can be constructed lies between $\log_2|X|$ and $|X|-1$. 
 %Informally we can say that the algorithm searches for `as few and as large as possible patterns', because it tries to minimize the size of the model as well as that of the instance matrix at the same time. This means that it will try to generate pattern $X$ by adding small elements to a incrementally growing pattern, resulting in a behaviour that approaches $|X|-1$ steps. This is in contrast to a hypothetical divide-and-conquer strategy that would first generate parts of $X$ that are of sizes $2, 4, 8,$ etc, resulting in $\log_2|X|$ steps.
-
 % We call this local search \emph{flood fill} because it is similar to the image algorithm with the same name. 
-
-To improve efficiency on large patterns without sacrificing the objectivity of the original heuristics, we add an optional local search. It is a result of the observation that the algorithm generates a large pattern $X$ by adding small elements to a incrementally growing pattern, resulting in a behaviour that approaches $|X|-1$ steps. Instead of taking all $|X|-1$ steps to arrive at $X$, we can try to predict which elements will be added to $X$ and merge them directly. Given that we selected candidate $(X,Y,\delta)$ and merged $X$ and $Y$ into $Z$, now for all $m$ resulting instances $z_i \in {z_0,\dots,z_{m-1}}$ we try to find pattern $W$ and relative offset $\delta$ such that holds:
+To improve the efficiency of finding large patterns without sacrificing the underlying idea of the original heuristics, we add an optional local search. Observe that without local search, Vouw generates a large pattern $X$ by adding small elements to an incrementally growing pattern, resulting in a behaviour that requires up to $|X|-1$ steps. To speed this up, we can try to `predict' which elements will be added to $X$ and add them immediately. After selecting candidate $(X,Y,\delta)$ and merging $X$ and $Y$ into $Z$, for all $m$ resulting instances $z_i \in {z_0,\dots,z_{m-1}}$ we try to find pattern $W$ and offset $\delta$ such that
 \begin{align}
 \label{floodfill}
 %\exists w \in \mathrm{POST}(z_i) \iff 
-\forall_{i\in 0\dots m} \exists_w \in \mathrm{ANT}(z_i) \cup \mathrm{POST}(z_i) \ \cdot \ \oslash(w) = W \land dist(z_i, w) = \delta 
+\forall_{i\in 0\dots m} \exists_w \in \mathrm{ANT}(z_i) \cup \mathrm{POST}(z_i) \ \cdot \ \oslash(w) = W \land dist(z_i, w) = \delta.
 \end{align}
-\noindent This yields zero or more candidates $(Z,W,\delta)$, which are then treated as any candidate: candidates with the highest gain are merged first until none exists with positive gain. This essentially means that we run the baseline algorithm only on the peripheries of all $z_i$, with the condition that the support of the candidates is equal to that of $Z$. Therefore we only expand $Z$ during local search and we do not create new patterns. 
+\noindent This yields zero or more candidates $(Z,W,\delta)$, which are then treated as any set of candidates: candidates with the highest gain are iteratively merged until no candidates with positive gain exist. This essentially means that we run the baseline algorithm only on the peripheries of all $z_i$, with the condition that the support of the candidates is equal to that of $Z$. %Therefore we only expand $Z$ during local search and we do not create new patterns. 
 
 %\subsubsection{Reusing Candidates}
 
 %In the baseline algorithm, candidate search is performed on each iteration and as exactly one candidate is selected. After merging the candidate, the list of candidates must be recomputed because the usages of the patterns may have changed and thus the gain function for the current set of candidates has become invalid. 
 
 %Candidate search is by far the most expensive operation of the algorithm and is it performed on each iteration.
-\smallskip \noindent \textbf{Reusing candidates}.  We can improve performance by reusing the candidate set and slightly changing the search heuristic of the algorithm. The \textbf{Best-N} heuristic selects multiple candidates on each iteration as opposed to the baseline \textbf{Best-1} heuristic that only selects a single candidate with the highest gain. Best-N selects candidates in descending order of gain until no candidates with positive gain are left. Furthermore we only consider candidates that are all \emph{disjoint}, because when we merge candidate $(X,Y,\delta)$, remaining candidates with $X$ and/or $Y$ have unknown support and therefore unknown gain.% On matrices with multiple unrelated patterns, or matrices with large symbol sets, this heuristic works greatly improves performance.
+\smallskip \noindent \textbf{Reusing candidates}.  We can improve performance by reusing the candidate set and slightly changing the search heuristic of the algorithm. The \textbf{Best-N} heuristic selects multiple candidates on each iteration, as opposed to the baseline \textbf{Best-1} heuristic that only selects a single candidate with the highest gain. Best-N selects candidates in descending order of gain until no candidates with positive gain are left. Furthermore we only consider candidates that are all \emph{disjoint}, because when we merge candidate $(X,Y,\delta)$, remaining candidates with $X$ and/or $Y$ have unknown support and therefore unknown gain.% On matrices with multiple unrelated patterns, or matrices with large symbol sets, this heuristic works greatly improves performance.
 
 %By doing a breadth-first-search in the periphery of all newly created instances after the last step of the algorithm. 
 
