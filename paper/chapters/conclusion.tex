@@ -2,12 +2,13 @@
 \input{"../preamble.tex"}
 \begin{document}
 
-\section{Conclusion}
+\section{Conclusions}
 
-We have introduced geometric pattern mining, the problem of finding recurring structures in matrices or raster-based data, that we had not previously seen in literature. Compared to most pattern mining problems, it adds a layer of encoding geometric relations of data elements. Furthermore the problem can be split into three classes, of which the first class has been the focus of this paper.
+We introduced geometric pattern mining, the problem of finding recurring structures in discrete, geometric matrices, or raster-based data. %Compared to most pattern mining problems, it adds a layer of encoding geometric relations of data elements. Furthermore the problem can be split into three classes, of which the first class has been the focus of this paper.
+Further, we presented Vouw, a heuristic algorithm for finding sets of geometric patterns that are good descriptions according to the MDL principle. The baseline algorithm is capable of accurately recovering patterns from synthetic data, and the resulting compression ratios are on par with the expectations based on the density of the data. Of the two improvements, especially the local search appears valuable as it improves precision and recall as well as runtime. For the future, we think that extensions to fault-tolerant patterns and clustering have large potential.
 
-We have also presented Vouw, an algorithm based on the MDL principle. The baseline algorithm is capable of generating high-quality results from synthetic datasets produced with our own dataset generated Ril. We have shown that the compression ratio achieved by the algorithm is on-par with what we would expect given the density (SNR) of the input data. By default, the algorithm has a bottleneck in the candidate search, which can be alleviated by the two demonstrated optimizations of the heuristics. It should also be mentioned that more optimizations on part of the implementation are possible (most notably parallelization), but these are outside the scope of this paper.
+%By default, the algorithm has a bottleneck in the candidate search, which can be alleviated by the two demonstrated optimizations of the heuristics. It should also be mentioned that more optimizations on part of the implementation are possible (most notably parallelization), but these are outside the scope of this paper.
 
-In future work we would like to generalize the formal definition and notation to n-dimensional data. Moreover, the framework can be expanded to cover all three problem classes. For the algorithm, we believe that it can benefit from more refinement on part of the encoding scheme in an effort to lower the threshold of pattern detection in larger matrices. Lastly we believe that expanding Vouw into similarity measure and clustering such demonstrated by \cite{campana2010compression}, holds a very interesting premise.
+%In future work we would like to generalize the formal definition and notation to n-dimensional data. Moreover, the framework can be expanded to cover all three problem classes. For the algorithm, we believe that it can benefit from more refinement on part of the encoding scheme in an effort to lower the threshold of pattern detection in larger matrices. 
 
 \end{document}

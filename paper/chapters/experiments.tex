@@ -4,17 +4,17 @@
 
 \section{Experiments and Results}
 
-To asses the practical performance of the Vouw algorithm, we will primarily use the synthetic dataset generator Ril that was developed specifically for this purpose. Ril utilizes random walks to populate a matrix with patterns of a given size and prevalence, up to a specified density, while filling the remainder of the matrix with noise. Both the pattern elements and the noise are picked from the same uniform random distribution on the interval $[0;255]$. The \emph{signal-to-noise ratio} (SNR) of the data is defined as the number of pattern elements over the matrix size $MN$. The objective of the resulting experiment is that we try to find all of the signal (the patterns) and none of the noise. Figure \ref{fig:ril} gives an overview of what the generated data looks like, how it is mined and evaluated.
+To asses Vouw's practical performance we primarily use Ril, a synthetic dataset generator developed for this purpose. Ril utilises random walks to populate a matrix with patterns of a given size and prevalence, up to a specified density, while filling the remainder of the matrix with noise. Both the pattern elements and the noise are picked from the same uniform random distribution on the interval $[0,255]$. The \emph{signal-to-noise ratio} (SNR) of the data is defined as the number of pattern elements over the matrix size $MN$. The objective of the experiment is to assess whether Vouw recovers all of the signal (the patterns) and none of the noise. Figure \ref{fig:ril} gives an overview of what the generated data looks like, and how it is mined and evaluated.
 
 \smallskip \noindent \textbf{Implementation.} %
-The implementation\footnote{https://github.com/mickymuis/libvouw} used here, consists of the Vouw algorithm written in vanilla C/C++, a GUI and the synthetic benchmark Ril. 
+The implementation\footnote{\url{https://github.com/mickymuis/libvouw}} used consists of the Vouw algorithm (written in vanilla C/C++), a GUI, and the synthetic benchmark Ril. 
 
 \smallskip \noindent \textbf{Evaluation.} %
-Completely random data (noise) is unlikely to be compressed. The SNR tells us how much noise is present in the data and thus conveniently gives us an upper bound of how much compression could be achieved. We use the ground truth SNR versus the resulting compression ratio as a benchmark to tell us how close we are in finding all the structure in the ground truth. 
+Completely random data (noise) is unlikely to be compressed. The SNR tells us how much of the data is noise and thus conveniently gives us an upper bound of how much compression could be achieved. We use the ground truth SNR versus the resulting compression ratio as a benchmark to tell us how close we are to finding all the structure in the ground truth. 
 
-Because the compression ratio alone does not tell us the quality of the results, we also compare the ground truth matrix with the compressed result. We use the notion that instances of singleton patterns do not yield any compression and these elements must therefore be noise. Therefore we reconstruct the original matrix from the compressed result, while omitting any singleton patterns. This essentially gives us a matrix of `positives' (signal) and `negatives' (noise). By comparing each element with the corresponding element in the ground truth matrix, traditional figures for \emph{precision} and \emph{recall} can be calculated.
+In addition, we also compare the ground truth matrix to the obtained model and instantiation. As singleton patterns do not yield any compression over the baseline model, we reconstruct the matrix omitting any singleton patterns. Ignoring the actual values, this gives us a Boolean matrix with `positives' (pattern occurrence=signal) and `negatives' (no pattern=noise). By comparing each element in this matrix with the corresponding element in the ground truth matrix, \emph{precision} and \emph{recall} can be calculated and evaluated.
 
-Figure~\ref{fig:snr} shows the influence of input SNR on compression ratio for different matrix sizes. We expect the compression ratio to be close to $1-\mathrm{snr}$. In Figure~\ref{fig:usage} shows that patterns with a low prevalence have a lower probability of being `detected' by the algorithm as they are more likely to be accidental/noise. We see that increasing the matrix size also increases this threshold. In Table \ref{table:optimize} we look at the influence of the two improvements upon the baseline algorithm as described in Section \ref{improvements}. In terms of quality, local search can improve the results quite substantial while Best-N notably \emph{lowers} precision. Both improve speed by an order of magnitude, although the improvements given by Best-N are superior. %Another observation is that the baseline algorithm does not scale very favourable with matrix size and that these improvements may be a requisite when mining larger matrices.    
+Figure~\ref{fig:snr} shows the influence of ground truth SNR on compression ratio for different matrix sizes. Compression ratio and SNR are clearly strongly correlated. Figure~\ref{fig:usage} shows that patterns with a low prevalence (i.e., number of planted occurrences) have a lower probability of being `detected' by the algorithm as they are more likely to be accidental/noise. We see that increasing the matrix size also increases this threshold. In Table \ref{table:optimize} we look at the influence of the two improvements upon the baseline algorithm as described in Section \ref{improvements}. In terms of quality, local search can improve the results quite substantially while Best-N notably \emph{lowers} precision. Both improve speed by an order of magnitude.%, although the improvements given by Best-N are superior. %Another observation is that the baseline algorithm does not scale very favourable with matrix size and that these improvements may be a requisite when mining larger matrices.    
 
 
 %%
@@ -103,7 +103,7 @@ Figure~\ref{fig:snr} shows the influence of input SNR on compression ratio for d
 	\caption{Prevalence versus recall}
 	\label{fig:usage}
 	\end{subfigure}
-	\caption{Qualitative results for increasingly large matrices (sizes are squared).}
+	\caption{Quantitative results for increasingly large matrices ($N=M=$ given number).}
 	\label{fig:plots}
 \end{figure}
 
