@@ -9,13 +9,13 @@ Further, we presented Vouw, a heuristic algorithm for finding sets of geometric 
 
 \begin{table}[t]
 %\centering
-\caption{Performance measurements for the baseline algorithm and its optimisations.}
+\caption{Performance measurements for the baseline algorithm and its optimizations.}
 \label{table:optimize}
 \begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}}lccccrrrr}
 \toprule
- & & \multicolumn{4}{c}{Precision/Recall} & \multicolumn{4}{c}{Average runtime}\\
+ & & \multicolumn{4}{c}{Precision/Recall} & \multicolumn{4}{c}{Average time}\\
  \cmidrule(l){3-6} \cmidrule(l){7-10} 
- Size & SNR & None & Local & Best-N & Both & None & Local & Best-N & Both \\
+ Size & SNR & None & Local & Best-* & Both & None & Local & Best-* & Both \\
 \midrule
  256 & .05 & .98/.98 & .99/.99 & .93/.98 & .95/.99 & 29s & 1s & 2s & 1s \\
    & .3 &.99/.8 & .99/.88 & .96/.82 & .99/.89 & 2m 32s & 9s & 5s & 5s \\
