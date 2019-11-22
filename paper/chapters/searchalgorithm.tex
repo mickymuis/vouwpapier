@@ -4,14 +4,15 @@
 
 \section{The Vouw Algorithm}
 
-Pattern mining often yields vast search spaces and geometric pattern mining is no exception. Since by definition two-part MDL is already an approximation of Kolmogorov complexity, it does not make sense to try to compute an exact solution and we therefore use the greedy heuristic widely used in MDL-based approaches \cite{krimp,slim,classy}. We devise an inductive algorithm similar to the lattice in Figure \ref{lattice}: we start with a completely underfit model (left of the lattice), where there is one instance for each matrix element. On each iteration we combine two patterns, resulting in one or more pairs of instances to be merged (one step right in the lattice). We pick the pair of patterns that improve the compression ratio the most and we repeat these steps until no improvements are possible.
+Pattern mining often yields vast search spaces and geometric pattern mining is no exception. We therefore use a heuristic approach, as is common in MDL-based approaches \cite{krimp,slim,classy}. We devise a greedy algorithm that exploits the inductive definition of the search space as shown by the lattice in Figure~\ref{lattice}. We start with a completely underfit model (leftmost in the lattice), where there is one instance for each matrix element. Next, in each iteration we combine two patterns, resulting in one or more pairs of instances to be merged (i.e., we move one step right in the lattice). In each step we merge the pair of patterns that improves compression most, and we repeat this until no improvement is possible.
 
 %%% THIS IS REDUNDANT AS IT ALREADY FOLLOWS FROM THE DEFITION OF A PATTERN
 %Another decision we make a priori is that we only find patterns that are \emph{contiguous}: containing only elements that are adjacent to at least one other elements in the same pattern. This decision results in a strong focus on local structure while also dramatically reducing the search space. 
 
 \subsection{Finding candidates}
 
-The first step of the algorithm is to find the `best' \textbf{candidate} pair of patterns to merge (Algorithm 1). Candidates are denoted as a tuple $(X,Y,\delta)$, where $X$ and $Y$ are patterns and $\delta$ the relative offset of $X$ and $Y$ as they occur in the data. All possibilities form an enormous vector space. Fortunately, we need only pairs of patterns and offsets that actually occur in the instance matrix. This means at each step we can directly enumerate candidates from the instantiation matrix and never even look at the original data.  
+The first step is to find the `best' \textbf{candidate} pair of patterns for merging (Algorithm 1). A candidates is denoted as a tuple $(X,Y,\delta)$, where $X$ and $Y$ are patterns and $\delta$ is the relative offset of $X$ and $Y$ as they occur in the data.
+Since we only need to consider pairs of patterns and offsets that actually occur in the instance matrix, we can directly enumerate candidates from the instantiation matrix and never even need to consider the original data.  
 
 The \textbf{support} of a candidate, written $\mathrm{sup}(X,Y,\delta)$, tells how often it is found in the instance matrix. Computing support is not completely trivial, as one candidate occurs multiple times in `mirrored' configurations, such as $(X,Y,\delta)$ and $(Y,X,-\delta)$, which are equivalent but can still be found separately. Furthermore, due to the definition of a pattern, many potential candidates cannot be considered by the simple fact that their elements are not adjacent. 
 
@@ -19,13 +20,13 @@ The \textbf{support} of a candidate, written $\mathrm{sup}(X,Y,\delta)$, tells h
 \smallskip \noindent \textbf{Peripheries}. For each instance $x$ we define its \emph{periphery}: the set of instances which are positioned such that their union with $x$ produces a valid pattern. This set is split into the \emph{anterior-} $\mathrm{ANT}(X)$ and \emph{posterior} $\mathrm{POST}(X)$ peripheries, containing instances that come before and after $x$ in lexicographical order, respectively. This enables us to scan the instance matrix once, in lexicographical order. For each instance $x$, we only consider the instances $\mathrm{POST}(x)$ as candidates, thereby eliminating any (mirrored) duplicates. 
 
 %\subsubsection{Self-Overlap}
-\smallskip \noindent \textbf{Self-overlap}. Self-overlap happens for candidates of the form $(X,X,\delta)$. In this case, too many or too few copies may be counted. Take for example a straight line of five instances of $X$. There are four unique pairs of two $X$'s, but only two can be merged at a time, in three different ways. Therefore, when considering candidates of the form $(X,X,\delta)$, we also compute an \emph{overlap coefficient}. This coefficient $e$ is given by the equation $e = (2N_X+1)\delta_i + \delta_j + N_X$. This equation essentially transforms $\delta$ into a one-dimensional coordinate space of all possible ways that $X$ could be arranged \emph{after} and \emph{adjacent} to itself. For each instance $x_1$ a vector of bits $V(x)$ is used to remember if we have already encountered a combination $x_1,x_2$ with coefficient $e$, such that we do not count a combination $x_2,x_3$ with an equal $e$. This eliminates the problem of incorrect counting due to self-overlap.
+\smallskip \noindent \textbf{Self-overlap}. Self-overlap happens for candidates of the form $(X,X,\delta)$. In this case, too many or too few copies may be counted. Take for example a straight line of five instances of $X$. There are four unique pairs of two $X$'s, but only two can be merged at a time, in three different ways. Therefore, when considering candidates of the form $(X,X,\delta)$, we also compute an \emph{overlap coefficient}. This coefficient $e$ is given by $e = (2N_X+1)\delta_i + \delta_j + N_X$, which essentially transforms $\delta$ into a one-dimensional coordinate space of all possible ways that $X$ could be arranged \emph{after} and \emph{adjacent} to itself. For each instance $x_1$ a vector of bits $V(x)$ is used to remember if we have already encountered a combination $x_1,x_2$ with coefficient $e$, such that we do not count a combination $x_2,x_3$ with an equal $e$. This eliminates the problem of incorrect counting due to self-overlap.
 
 \begin{figure*}[t!]
 \vspace{-\baselineskip}
 \begin{minipage}[t]{.45\textwidth}
 	\begin{algorithm}[H]
-	\caption{Find Candidates}
+	\caption{FindCandidates}
 	%\label{alg:cand}
 	\begin{algorithmic}[1]
 	\Require $I$
@@ -51,7 +52,7 @@ The \textbf{support} of a candidate, written $\mathrm{sup}(X,Y,\delta)$, tells h
 	\label{alg:vouw}
 	\begin{algorithmic}[1]
 	\Require $H,\ I$
-		\State $C \ \gets$ Find Candidates
+		\State $C \ \gets$ FindCandidates(I)
 		\State $(X,Y,\delta) \in C : \forall_{c \in C} \Delta L((X,Y,\delta)) \leq \Delta L(c)$
 	\State $\Delta L_{best} = \Delta L((X,Y,\delta))$
 	\If{$\Delta L_{best} > 0 $}
@@ -72,7 +73,7 @@ The \textbf{support} of a candidate, written $\mathrm{sup}(X,Y,\delta)$, tells h
 
 \subsection{Gain computation}
 
-After candidate search we have a set of candidates $C$ and their respective supports. The next step is to select the candidate that gives the best \emph{gain}: the improvement in compression by merging the pattens in the candidate. For each candidate $c=(X,Y,\delta)$ the gain $\Delta L(A',c)$  is comprised of two parts: (1) the negative gain of adding the union pattern $Z$ to the model $H$, resulting in $H'$ and (2) the gain of replacing all instances $x,y$ with relative offset $\delta$ by $Z$ in $I$, resulting in $I'$. We use the length functions $L_1, L_2$ to derive an equation for gain:
+After candidate search we have a set of candidates $C$ and their respective supports. The next step is to select the candidate that gives the best \emph{gain}: the improvement in compression by merging the candidate pair of patterns. For each candidate $c=(X,Y,\delta)$ the gain $\Delta L(A',c)$  is comprised of two parts: (1) the negative gain of adding the union pattern $Z$ to the model $H$, resulting in $H'$, and (2) the gain of replacing all instances $x,y$ with relative offset $\delta$ by $Z$ in $I$, resulting in $I'$. We use length functions $L_1, L_2$ to derive an equation for gain:
 \begin{align}
 \label{gain}
 \begin{split}
@@ -81,12 +82,12 @@ After candidate search we have a set of candidates $C$ and their respective supp
 \end{split}
 \end{align}
 
-As we can see, the terms with $L_1$ are simplified to $- L_p(Z)$ and the model's length because $L_1$ is simply a summation of individual pattern lengths. The equation of $L_2$ requires the recomputation of the entire instance matrix' length, which is expensive considering we need to perform it for \emph{every candidate}, \emph{every iteration}. However, we can rework the function $L_{pp}$ in Equation (\ref{plugin}) by observing that we can isolate the logarithms and generalize them into:
+As we can see, the terms with $L_1$ are simplified to $- L_p(Z)$ and the model's length because $L_1$ is simply a summation of individual pattern lengths. The equation of $L_2$ requires the recomputation of the entire instance matrix' length, which is expensive considering we need to perform it for \emph{every candidate}, \emph{every iteration}. However, we can rework the function $L_{pp}$ in Equation (\ref{plugin}) by observing that we can isolate the logarithms and generalise them into
 \begin{align}
-	\log_G(a,b) = \log \frac{\Gamma(a+ b\epsilon)}{\Gamma(b\epsilon)} = \log \Gamma(a+ b\epsilon) - \log \Gamma(b\epsilon)
+	\log_G(a,b) = \log \frac{\Gamma(a+ b\epsilon)}{\Gamma(b\epsilon)} = \log \Gamma(a+ b\epsilon) - \log \Gamma(b\epsilon),
 \end{align} 
 
-\noindent Which can be used to rework the second part of Equation (\ref{gain}) in such way that the gain equation can be computed in constant time complexity.
+\noindent which can be used to rework the second part of Equation (\ref{gain}) in such way that the gain equation can be computed in constant time complexity.
 
 \begin{align}
 \begin{split}
@@ -98,16 +99,20 @@ As we can see, the terms with $L_1$ are simplified to $- L_p(Z)$ and the model's
 \end{split}   
 \end{align}
 
-\noindent Notice that in some cases the usages of $X$ and $Y$ equal that of $Z$, which means additional gain is created by removing $X$ and $Y$ from the model. 
+\noindent Notice that in some cases the usages of $X$ and $Y$ are equal to that of $Z$, which means additional gain is created by removing $X$ and $Y$ from the model. 
 
 \subsection{Mining a Set of Patterns}
 
 %Finding candidates and computing gain for these candidates, is the first part of the algorithm. 
-In the second part of the algorithm we select the candidate $(X,Y,\delta)$ with the best gain and merge $X$ and $Y$ to form $Z$, as explained in Section \ref{constructpatterns}. We linearly traverse $I$ to replace all instances $x$ and $y$ with relative offset $\delta$  by instances of $Z$. $(X,Y,\delta)$ was constructed by looking in the posterior periphery of all $x$ to find $Y$ and $\delta$, which means that $Y$ always comes after $X$ in lexicographical order. The pivot of a pattern is the first element in lexicographical order, therefore $\mathrm{pivot}(Z) = \mathrm{pivot}(X)$. This means that we can replace all matching $x$ with an instance of $Z$ and all matching $y$ with $\cdot$. This concludes the baseline version of the algorithm, which is listed in Algorithm \ref{alg:vouw}. 
+In the second part of the algorithm, listed in Algorithm~\ref{alg:vouw}, we select the candidate $(X,Y,\delta)$ with the largest gain and merge $X$ and $Y$ to form $Z$, as explained in Section~\ref{constructpatterns}. We linearly traverse $I$ to replace all instances $x$ and $y$ with relative offset $\delta$  by instances of $Z$. $(X,Y,\delta)$ was constructed by looking in the posterior periphery of all $x$ to find $Y$ and $\delta$, which means that $Y$ always comes after $X$ in lexicographical order. The pivot of a pattern is the first element in lexicographical order, therefore $\mathrm{pivot}(Z) = \mathrm{pivot}(X)$. This means that we can replace all matching $x$ with an instance of $Z$ and all matching $y$ with $\cdot$. %This concludes the baseline version of the algorithm. 
 
 \subsection{Improvements}
 \label{improvements}
 %\subsubsection{Local Search}
+
+We next describe two improvements on the baseline algorithm. 
+
+\smallskip
 \noindent \textbf{Local search}. Given a matrix containing some pattern $X$, the algorithm can arrive to $X$ in different ways. Exploring these combinatorics can tell us how efficiently the algorithm arrives at $X$. By definition we know that the fundamental operation is to combine exactly two patterns on each step. Given this, the number of steps in which $X$ can be constructed lies between $\log_2|X|$ and $|X|-1$. 
 
 %Informally we can say that the algorithm searches for `as few and as large as possible patterns', because it tries to minimize the size of the model as well as that of the instance matrix at the same time. This means that it will try to generate pattern $X$ by adding small elements to a incrementally growing pattern, resulting in a behaviour that approaches $|X|-1$ steps. This is in contrast to a hypothetical divide-and-conquer strategy that would first generate parts of $X$ that are of sizes $2, 4, 8,$ etc, resulting in $\log_2|X|$ steps.
