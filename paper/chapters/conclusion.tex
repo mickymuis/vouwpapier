@@ -7,6 +7,28 @@
 We introduced geometric pattern mining, the problem of finding recurring structures in discrete, geometric matrices, or raster-based data. %Compared to most pattern mining problems, it adds a layer of encoding geometric relations of data elements. Furthermore the problem can be split into three classes, of which the first class has been the focus of this paper.
 Further, we presented Vouw, a heuristic algorithm for finding sets of geometric patterns that are good descriptions according to the MDL principle. The baseline algorithm is capable of accurately recovering patterns from synthetic data, and the resulting compression ratios are on par with the expectations based on the density of the data. Of the two improvements, especially the local search appears valuable as it improves precision and recall as well as runtime. For the future, we think that extensions to fault-tolerant patterns and clustering have large potential.
 
+\begin{table}[b]
+%\centering
+\caption{Performance measurements for the baseline algorithm and its optimizations. Experiments were performed on an Intel Xeon-E2630v3 with 512GB RAM.}
+\label{table:optimize}
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}}lccccrrrr}
+\toprule
+ & & \multicolumn{4}{c}{Precision/Recall} & \multicolumn{4}{c}{Average time}\\
+ \cmidrule(l){3-6} \cmidrule(l){7-10} 
+ Size & SNR & None & Local & Best-N & Both & None & Local & Best-N & Both \\
+\midrule
+ 256 & .05 & .98/.98 & .99/.99 & .93/.98 & .95/.99 & 29s & 1s & 2s & 1s \\
+   & .3 &.99/.8 & .99/.88 & .96/.82 & .99/.89 & 2m 32s & 9s & 5s & 5s \\
+ 512 & .05 & .98/.97 & .99/.99 & .87/.97 & .93/.98 & 5m 26s & 8s & 20s & 6s \\
+  & .3 &.97/.93 & .99/.99 & .94/.91 & .97/.90 & 26m 52s & 2m 32s & 24s & 65s \\
+ 1024 & .05 & .97/.98 & .99/.99 & .84/.98 & .92/.96 & 21m 34s & 44s & 37s & 34s \\
+ & .3 &.98/.98 & .99/.99 & .93/.96 & .98/.97 & 116m 4s & 7m 31s & 1m 49s & 3m 31s \\
+\bottomrule
+\end{tabular*}
+%\caption*{$^1$ signal-to-noise ratio of $.05$, $^2$ signal-to-noise ratio of $.3$}
+\end{table}
+
+
 %By default, the algorithm has a bottleneck in the candidate search, which can be alleviated by the two demonstrated optimizations of the heuristics. It should also be mentioned that more optimizations on part of the implementation are possible (most notably parallelization), but these are outside the scope of this paper.
 
 %In future work we would like to generalize the formal definition and notation to n-dimensional data. Moreover, the framework can be expanded to cover all three problem classes. For the algorithm, we believe that it can benefit from more refinement on part of the encoding scheme in an effort to lower the threshold of pattern detection in larger matrices. 
