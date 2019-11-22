@@ -7,9 +7,9 @@
 We introduced geometric pattern mining, the problem of finding recurring structures in discrete, geometric matrices, or raster-based data. %Compared to most pattern mining problems, it adds a layer of encoding geometric relations of data elements. Furthermore the problem can be split into three classes, of which the first class has been the focus of this paper.
 Further, we presented Vouw, a heuristic algorithm for finding sets of geometric patterns that are good descriptions according to the MDL principle. The baseline algorithm is capable of accurately recovering patterns from synthetic data, and the resulting compression ratios are on par with the expectations based on the density of the data. Of the two improvements, especially the local search appears valuable as it improves precision and recall as well as runtime. For the future, we think that extensions to fault-tolerant patterns and clustering have large potential.
 
-\begin{table}[b]
+\begin{table}[t]
 %\centering
-\caption{Performance measurements for the baseline algorithm and its optimizations. Experiments were performed on an Intel Xeon-E2630v3 with 512GB RAM.}
+\caption{Performance measurements for the baseline algorithm and its optimizations.}
 \label{table:optimize}
 \begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}}lccccrrrr}
 \toprule

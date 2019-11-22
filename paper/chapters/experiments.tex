@@ -47,7 +47,7 @@
 	%\centering%
 	\begin{subfigure}[t]{0.5\textwidth}
 	%\centering
-	\begin{gnuplot}[terminal=epslatex, terminaloptions={color dashed size 6.5cm,4.5cm font "lmodern,8"}]
+	\begin{gnuplot}[terminal=epslatex, terminaloptions={color dashed size 6.5cm,5cm font "lmodern,8"}]
 		set key box bottom left
 		set key width 1.0
 		set key height 1.0
@@ -75,7 +75,7 @@
 	~
 	\begin{subfigure}[t]{0.5\textwidth}
 	%\centering
-	\begin{gnuplot}[terminal=epslatex, terminaloptions={color dashed size 6.5cm,4.5cm font "lmodern,8"}]
+	\begin{gnuplot}[terminal=epslatex, terminaloptions={color dashed size 6.5cm,5cm font "lmodern,8"}]
 		set key box bottom right
 		set key width 1.0
 		set key height 1.0
@@ -109,7 +109,7 @@
 
 % Begin of proxy graphs from PDF
 %\begin{comment}
-\begin{figure}[p]%
+\begin{figure}[t]%
 	\begin{subfigure}[t]{0.5\textwidth}
 	\includegraphics[scale=1]{figures/experiments-gnuplottex-fig1.pdf}
 	%\caption{The influence of SNR in the ground truth}
@@ -133,7 +133,7 @@
 To asses Vouw's practical performance we primarily use Ril, a synthetic dataset generator developed for this purpose. Ril utilises random walks to populate a matrix with patterns of a given size and prevalence, up to a specified density, while filling the remainder of the matrix with noise. Both the pattern elements and the noise are picked from the same uniform random distribution on the interval $[0,255]$. The \emph{signal-to-noise ratio} (SNR) of the data is defined as the number of pattern elements over the matrix size $MN$. The objective of the experiment is to assess whether Vouw recovers all of the signal (the patterns) and none of the noise. Figure \ref{fig:ril} gives an overview of what the generated data looks like, and how it is mined and evaluated.
 
 \smallskip \noindent \textbf{Implementation.} %
-The implementation\footnote{\url{https://github.com/mickymuis/libvouw}} used consists of the Vouw algorithm (written in vanilla C/C++), a GUI, and the synthetic benchmark Ril. 
+The implementation\footnote{\url{https://github.com/mickymuis/libvouw}} used consists of the Vouw algorithm (written in vanilla C/C++), a GUI, and the synthetic benchmark Ril. Experiments were performed on an Intel Xeon-E2630v3 with 512GB RAM.
 
 \smallskip \noindent \textbf{Evaluation.} %
 Completely random data (noise) is unlikely to be compressed. The SNR tells us how much of the data is noise and thus conveniently gives us an upper bound of how much compression could be achieved. We use the ground truth SNR versus the resulting compression ratio as a benchmark to tell us how close we are to finding all the structure in the ground truth. 
