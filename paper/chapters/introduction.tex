@@ -4,15 +4,9 @@
 
 \section{Introduction}
 
-Frequent pattern mining \cite{aggarwal2014fpm} is the well-known subfield of data mining that aims to find and extract recurring substructures from data, as a form of knowledge discovery. The generic concept of pattern mining has been instantiated for many different types of patterns, e.g., for item sets (in Boolean transaction data), subgraphs (in graphs/networks), and episodes (in sequences). So far, however, little research has been done on pattern mining for raster-based data, i.e., geometric matrices in which the row and column orders are fixed. The exception is geometric tiling \cite{gionis2004tiles,tatti2012stijl}, but that problem only considers tiles, i.e., rectangular-shaped patterns, in Boolean data.
+Frequent pattern mining \cite{aggarwal2014fpm} is the well-known subfield of data mining that aims to find and extract recurring substructures from data, as a form of knowledge discovery. The generic concept of pattern mining has been instantiated for many different types of patterns, e.g., for item sets (in Boolean transaction data), subgraphs (in graphs/networks), and episodes (in sequences). So far, however, little research has been done on pattern mining for raster-based data, i.e., geometric matrices in which the row and column orders are fixed. %The exception is geometric tiling \cite{gionis2004tiles,tatti2012stijl}, but that problem only considers tiles, i.e., rectangular-shaped patterns, in Boolean data.
 
-In this paper we generalise this setting in two important ways. First, we consider geometric patterns \emph{of any shape} that are geometrically connected, i.e., it must be possible to reach any element from any other element in a pattern by only traversing elements in that pattern. Second, we consider \emph{discrete geometric data} with any number of possible values (which includes the Boolean case). We call the resulting problem \emph{geometric pattern mining}.
-
-Figure~\ref{fig-example1} illustrates an example of geometric pattern mining.  Figure~\ref{fig-example1a} shows a $32 \times 24$ grayscale `geometric matrix', with each element in $[0,255]$, apparently filled with noise. If we take a closer look at all horizontal pairs of elements, however, we find that the pair $(146,11)$ is, amongst others, more prevalent than expected from `random noise' (Figure~\ref{fig-example1b}). If we would continue to try all combinations of elements that `stand out' from the background noise, we would eventually find four copies of the letter `I' set in 16 point Garamond Italic (Figure~\ref{fig-example1c}).
-
-The 35 elements that make up a single `I' in the example form what we call a \emph{geometric pattern} that occurs four times. Since these occurrences jointly cover a substantial part of the matrix, we could use this pattern to describe the matrix more succinctly than by 768 unrelated values. That is, we could describe it as 628 unrelated values plus pattern `I' at locations $(5,4), (11,11), (20,3), (25,10)$, hereby separating structure from accidental (noise) data. Since the latter requires less space, we have compressed the data. At the same time we have learned something about the data, namely that it contains four I's. This suggests that we can use compression as a criterion to find patterns that describe the data.
-
-\begin{figure}[t]
+\begin{figure}[b]
 \centering
 \begin{subfigure}[t]{0.35\textwidth}
 \centering
@@ -21,7 +15,7 @@ The 35 elements that make up a single `I' in the example form what we call a \em
 \label{fig-example1a}
 \end{subfigure}%
 ~
-\begin{subfigure}[t]{0.20\textwidth}
+\begin{subfigure}[t]{0.21\textwidth}
 \centering
 \includegraphics[scale=.25]{img/Garamond-I-highlight_cropped.png}
 \caption{Pair $(146,11)$.}
@@ -38,8 +32,16 @@ The 35 elements that make up a single `I' in the example form what we call a \em
 \label{fig-example1}
 \end{figure}  
 
+In this paper we generalise this setting in two important ways. First, we consider geometric patterns \emph{of any shape} that are geometrically connected, i.e., it must be possible to reach any element from any other element in a pattern by only traversing elements in that pattern. Second, we consider \emph{discrete geometric data} with any number of possible values (which includes the Boolean case). We call the resulting problem \emph{geometric pattern mining}.
+
+Figure~\ref{fig-example1} illustrates an example of geometric pattern mining.  Figure~\ref{fig-example1a} shows a $32 \times 24$ grayscale `geometric matrix', with each element in $[0,255]$, apparently filled with noise. If we take a closer look at all horizontal pairs of elements, however, we find that the pair $(146,11)$ is, amongst others, more prevalent than expected from `random noise' (Figure~\ref{fig-example1b}). If we would continue to try all combinations of elements that `stand out' from the background noise, we would eventually find four copies of the letter `I' set in 16 point Garamond Italic (Figure~\ref{fig-example1c}).
+
+The 35 elements that make up a single `I' in the example form what we call a \emph{geometric pattern}. Since its four occurrences jointly cover a substantial part of the matrix, we could use this pattern to describe the matrix more succinctly than by 768 unrelated values. That is, we could describe it as 628 unrelated values plus pattern `I' at locations $(5,4), (11,11), (20,3), (25,10)$, hereby separating structure from accidental (noise) data. Since the latter requires less space, we have compressed the data. At the same time we have learned something about the data, namely that it contains four I's. This suggests that we can use compression as a criterion to find patterns that describe the data.
+
 \smallskip
-\noindent \textbf{Approach and contributions}. Our first contribution is that we introduce and formally define \emph{geometric pattern mining}, i.e., the problem of finding recurring local structure in geometric, discrete matrices. Although we restrict the scope of this paper to two-dimensional data, the generic concept applies to larger number of dimensions. Potential applications include the analysis of satellite imagery, texture recognition, and clustering.
+\noindent \textbf{Approach and contributions}. Our first contribution is that we introduce and formally define \emph{geometric pattern mining}. Although we restrict the scope of this paper to two-dimensional data, the generic concept applies to larger numbers of dimensions. Potential applications include the analysis of satellite imagery, texture recognition, and clustering.
+
+% , i.e., the problem of finding recurring local structure in geometric, discrete matrices.
 
 We distinguish three subtypes of geometric patterns. The first concerns the discovery of \emph{exactly identical} patterns; the second concerns \emph{fault-tolerant} patterns, which can have noisy occurrences; the third concerns \emph{transformational} patterns, which are identical after some transformation (such as mirror, inverse, rotate, etc.). Each consecutive subtype makes the problem more expressive and hence more complex. Further, we distinguish the discovery of patterns from either an otherwise empty matrix, differently distributed noise, or similarly distributed noise, again in order of increasing difficulty.
 
