@@ -1,0 +1,110 @@
+\newlength{\mycolwd}      % array column width
+\settowidth{\mycolwd}{$w$}
+
+\newcolumntype{C}[1]{>{\centering\arraybackslash$}m{#1}<{$}}
+
+\begin{tikzpicture}[on grid, grow=right]
+\node(R)[l1] {\tiny $\stackrel{X}{\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}0\end{array} \right ]}$ \hfill $\stackrel{Y}{\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}1\end{array} \right ]}$ \hfill $\stackrel{I}{\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}X & Y \\Y & X\end{array} \right ]}$}
+	child {
+        node(F)[l3] {\tiny $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}0 & 1\end{array} \right ]$ \hfill $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}V & \cdot \\Y & X\end{array} \right ]$}
+        	  child {
+                node(Q)[l3]
+                    {\tiny $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}1 & 0\end{array} \right ]$ \hfill $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}V & \cdot \\ W & \cdot\end{array} \right ]$}
+                edge from parent 
+            }
+            edge from parent[draw=none] 
+            (R) edge (F.west)
+    }
+    child {
+        node(E)[l2] {\tiny $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}1 \\ 0\end{array} \right ]$ \hfill $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}W & V \\ Y & \cdot\end{array} \right ]$}        
+            child {
+                node(J)[l3]
+                    {\\[.15cm]\tiny $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}0 & 1 \\ \cdot & 0\end{array} \right ]$ \hfill $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}W & \cdot \\ Y & \cdot\end{array} \right ]$}
+                edge from parent 
+            }
+            child {
+                node(P)[l3]
+                    {\\[.15cm]\tiny $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}0 \\ 1 \end{array} \right ]$ \hfill $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}W & V \\ \cdot & \cdot\end{array} \right ]$}
+                edge from parent 
+            }
+            edge from parent[draw=none] 
+            (R) edge (E.west)
+    }    
+    child {
+        node(D)[l2] {\tiny $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}\cdot & 1 \\ 1 & \cdot\end{array} \right ]$ \hfill $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}X & V \\ \cdot & X\end{array} \right ]$}        
+            child {
+                node(I)[l3]
+                    {\\[-.05cm]\tiny $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}\cdot & 1 \\ 1 & 0\end{array} \right ]$ \hfill $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}X & W \\ \cdot & \cdot\end{array} \right ]$}
+                edge from parent 
+            }
+            child {
+                node(O)[l3]
+                    {\\[-.05cm]\tiny $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}0 & \cdot \\ \cdot & 0 \end{array} \right ]$ \hfill $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}W & V \\ \cdot & \cdot\end{array} \right ]$}
+                edge from parent 
+            }
+            edge from parent[draw=none] 
+            (R) edge (D.west)
+    }    
+    child {
+        node(C)[l2] {\tiny $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}0 \\ 1\end{array} \right ]$ \hfill $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}V & Y \\\cdot & X\end{array} \right ]$}        
+            child {
+                node(H)[l3]
+                    {\vspace{.1cm}\tiny $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}0 & 1 \\ 1 & \cdot\end{array} \right ]$ \hfill $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}W & \cdot \\ \cdot & X\end{array} \right ]$
+                    }                    
+                    	child {
+                    		node(K)[l4] {\tiny $\stackrel{Z}{\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}0 & 1 \\ 1 & 0\end{array} \right ]}$ \hfill $\stackrel{I}{\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}Z & \cdot \\ \cdot & \cdot\end{array} \right ]}$}
+                    	}
+                edge from parent 
+            }
+            child {
+                node(N)[l3]
+                    {\vspace{.08cm}\tiny $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}1 \\ 0 \end{array} \right ]$ \hfill $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}V & W \\ \cdot & \cdot\end{array} \right ]$}
+                edge from parent 
+            }
+            edge from parent[draw=none] 
+            (R) edge (C.west)
+    }    
+    child {
+        node(B)[l2] {\tiny $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}0 & \cdot \\ \cdot & 0\end{array} \right ]$ \hfill $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}V & Y \\Y & \cdot\end{array} \right ]$}        
+            child {
+                node(G)[l3]
+                    {\vspace{.27cm}\tiny $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}0 & \cdot \\ 1 & 0\end{array} \right ]$ \hfill $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}W & Y \\ \cdot & \cdot\end{array} \right ]$}
+                edge from parent 
+            }
+            child {
+                node(M)[l3]
+                    {\vspace{.25cm}\tiny $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}\cdot & 1 \\ 1 & \cdot \end{array} \right ]$ \hfill $\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}V & W \\ \cdot & \cdot\end{array} \right ]$}
+                edge from parent 
+            }
+            edge from parent[draw=none] 
+            (R) edge (B.west)
+    } 
+    child {
+        node(A)[l2] {\tiny $\stackrel{V}{\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}1 &0\end{array} \right ]}$ \hfill $\stackrel{I}{\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}X & Y \\V & \cdot\end{array} \right ]}$}
+        child {
+                node(L)[l3]
+                    {\vspace{.2cm}\tiny $\stackrel{W}{\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}0 & 1\end{array} \right ]}$ \hfill $\stackrel{I}{\left [ \begin{array}{*{2}{@{}C{\mycolwd}@{}}}W & \cdot \\ V & \cdot\end{array} \right ]}$}
+                edge from parent 
+         }
+         edge from parent[draw=none] 
+            (R) edge (A.west)
+    };
+\draw(F.east)--(H.west);
+\draw(F.east)--(J.west);
+\draw(B.east)--(J.west);
+\draw(C.east)--(G.west);
+\draw(D.east)--(H.west);
+\draw(E.east)--(I.west);
+\draw(A.east)--(G.west);
+\draw(A.east)--(I.west);
+\draw(G.east)--(K.west);
+\draw(I.east)--(K.west);
+\draw(J.east)--(K.west);
+\draw(L.east)--(K.west);
+\draw(M.east)--(K.west);
+\draw(N.east)--(K.west);
+\draw(O.east)--(K.west);
+\draw(P.east)--(K.west);
+\draw(Q.east)--(K.west);
+\end{tikzpicture}
+\caption{Model space lattice for a $2\times 2$ Boolean matrix. The V, W, and Z columns show which pattern is added in each step, while $I$ depicts the current instantiation.}

@@ -3,6 +3,8 @@
 \usepackage{multicol}
 %\usepackage{llncsdoc}
 \usepackage{amsmath}
+\usepackage{array}
+%\usepackage{mathtools}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
@@ -47,14 +49,20 @@
 
 %% For lattice figure
 % Set the overall layout of the tree
-\tikzstyle{level 1}=[level distance=3.0cm, sibling distance=0.6cm]
-\tikzstyle{level 2}=[level distance=3.5cm, sibling distance=0.6cm]
-\tikzstyle{level 3}=[level distance=3.5cm, sibling distance=0.6cm]
+%\tikzstyle{level 1}=[level distance=3.0cm, sibling distance=0.6cm]
+%\tikzstyle{level 2}=[level distance=3.5cm, sibling distance=0.6cm]
+%\tikzstyle{level 3}=[level distance=3.5cm, sibling distance=0.6cm]
+
+\tikzstyle{level 1}=[level distance=3.0cm, sibling distance=0.81cm]
+\tikzstyle{level 2}=[level distance=3.5cm, sibling distance=0.455cm]
+\tikzstyle{level 3}=[level distance=3.5cm, sibling distance=0.5cm]
+
 
 % Define styles for bags and leafs
-\tikzstyle{l1} = [rectangle, text width=5em, text centered]
-\tikzstyle{l2} = [rectangle, text width=5em, text centered]
-\tikzstyle{l3} = [rectangle, text width=5em, text centered]
+\tikzstyle{l1} = [rectangle, text width=6.4em, text centered]
+\tikzstyle{l2} = [rectangle, text width=5.2em, text centered]
+\tikzstyle{l3} = [rectangle, text width=5.2em, text centered]
+\tikzstyle{l4} = [rectangle, text width=5.2em, text centered]
 
 % only when using asmthm
 %\newtheorem{definition}{Definition}
