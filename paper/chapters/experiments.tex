@@ -142,4 +142,25 @@ In addition, we also compare the ground truth matrix to the obtained model and i
 
 Figure~\ref{fig:plots} (left) shows the influence of ground truth SNR on compression ratio for different matrix sizes. Compression ratio and SNR are clearly strongly correlated. Figure~\ref{fig:plots} (right) shows that patterns with a low prevalence (i.e., number of planted occurrences) have a lower probability of being `detected' by the algorithm as they are more likely to be accidental/noise. Increasing the matrix size also increases this threshold. In Table \ref{table:optimize} we look at the influence of the two improvements upon the baseline algorithm as described in Section \ref{improvements}. In terms of quality, local search can improve the results quite substantially while Best-* notably \emph{lowers} precision. Both improve speed by an order of magnitude.%, although the improvements given by Best-* are superior. %Another observation is that the baseline algorithm does not scale very favourable with matrix size and that these improvements may be a requisite when mining larger matrices.    
 
+\begin{table}
+%\centering
+\caption{Performance measurements for the baseline algorithm and its optimizations.}
+\label{table:optimize}
+\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}}lccccrrrr}
+\toprule
+ & & \multicolumn{4}{c}{Precision/Recall} & \multicolumn{4}{c}{Average time}\\
+ \cmidrule(l){3-6} \cmidrule(l){7-10} 
+ Size & SNR & None & Local & Best-* & Both & None & Local & Best-* & Both \\
+\midrule
+ 256 & .05 & .98/.98 & .99/.99 & .93/.98 & .95/.99 & 29s & 1s & 2s & 1s \\
+   & .3 &.99/.8 & .99/.88 & .96/.82 & .99/.89 & 2m 32s & 9s & 5s & 5s \\
+ 512 & .05 & .98/.97 & .99/.99 & .87/.97 & .93/.98 & 5m 26s & 8s & 20s & 6s \\
+  & .3 &.97/.93 & .99/.99 & .94/.91 & .97/.90 & 26m 52s & 2m 32s & 24s & 65s \\
+ 1024 & .05 & .97/.98 & .99/.99 & .84/.98 & .92/.96 & 21m 34s & 44s & 37s & 34s \\
+ & .3 &.98/.98 & .99/.99 & .93/.96 & .98/.97 & 116m 4s & 7m 31s & 1m 49s & 3m 31s \\
+\bottomrule
+\end{tabular*}
+%\caption*{$^1$ signal-to-noise ratio of $.05$, $^2$ signal-to-noise ratio of $.3$}
+\end{table}
+
 \end{document}
