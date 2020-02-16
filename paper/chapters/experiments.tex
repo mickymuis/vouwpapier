@@ -8,28 +8,28 @@
 \centering
 \begin{subfigure}[t]{0.25\textwidth}
 \centering
-\includegraphics[scale=.9]{img/exp_input_2_cropped.png}
+\includegraphics[scale=.88]{img/exp_input_2_cropped.png}
 \caption{Generated matrix}
 \label{fig:rila}
 \end{subfigure}%
 ~
 \begin{subfigure}[t]{0.25\textwidth}
 \centering
-\includegraphics[scale=.9]{img/exp_inputpatterns_2_cropped.png}
+\includegraphics[scale=.88]{img/exp_inputpatterns_2_cropped.png}
 \caption{Ground truth}
 \label{fig:rilb}
 \end{subfigure}%
 ~
 \begin{subfigure}[t]{0.25\textwidth}
 \centering
-\includegraphics[scale=.9]{img/exp_result_2_cropped.png}
+\includegraphics[scale=.88]{img/exp_result_2_cropped.png}
 \caption{Found patterns}
 \label{fig:rilc}
 \end{subfigure}%
 ~
 \begin{subfigure}[t]{0.25\textwidth}
 \centering
-\includegraphics[scale=.9]{img/exp_diff_2_cropped.png}
+\includegraphics[scale=.88]{img/exp_diff_2_cropped.png}
 \caption{Difference}
 \label{fig:rild}
 \end{subfigure}%
@@ -42,7 +42,7 @@
 %% It can be omitted by directly including the pre-baked PDFs as figures
 %%
 
-\begin{comment}
+%\begin{comment}
 \begin{figure}[t]%
 	%\centering%
 	\begin{subfigure}[t]{0.5\textwidth}
@@ -101,14 +101,14 @@
 	\caption{The influence of SNR in the ground truth (left) and prevalence on recall (right)} 
 	\label{fig:plots}
 \end{figure}
-\end{comment}
+%\end{comment}
 
 %%
 %% End of Gnuplottex section
 %%
 
 % Begin of proxy graphs from PDF
-%\begin{comment}
+\begin{comment}
 \begin{figure}[t]%
 	\begin{subfigure}[t]{0.5\textwidth}
 	\includegraphics[scale=1]{figures/experiments-gnuplottex-fig1.pdf}
@@ -127,10 +127,10 @@
 	\caption{The influence of SNR in the ground truth (left) and prevalence on recall (right).} 
 	\label{fig:plots}
 \end{figure}
-%\end{comment}
+\end{comment}
 % End of proxy graphs
 
-To asses Vouw's practical performance we primarily use Ril, a synthetic dataset generator developed for this purpose. Ril utilises random walks to populate a matrix with patterns of a given size and prevalence, up to a specified density, while filling the remainder of the matrix with noise. Both the pattern elements and the noise are picked from the same uniform random distribution on the interval $[0,255]$. The \emph{signal-to-noise ratio} (SNR) of the data is defined as the number of pattern elements over the matrix size $MN$. The objective of the experiment is to assess whether Vouw recovers all of the signal (the patterns) and none of the noise. Figure \ref{fig:ril} gives an overview of what the generated data looks like, and how it is mined and evaluated.
+To asses Vouw's practical performance we primarily use Ril, a synthetic dataset generator developed for this purpose. Ril utilises random walks to populate a matrix with patterns of a given size and prevalence, up to a specified density, while filling the remainder of the matrix with noise. Both the pattern elements and the noise are picked from the same uniform random distribution on the interval $[0,255]$. The \emph{signal-to-noise ratio} (SNR) of the data is defined as the number of pattern elements over the matrix size $MN$. The objective of the experiment is to assess whether Vouw recovers all of the signal (the patterns) and none of the noise. Figure \ref{fig:ril} gives an example of the generated data and how it is evaluated. A more extensive description can be found in the Appendix \footnote{The appendix is available on \url{https://arxiv.org/abs/1911.09587}.}.
 
 \smallskip \noindent \textbf{Implementation.} %
 The implementation\footnote{\url{https://github.com/mickymuis/libvouw}} used consists of the Vouw algorithm (written in vanilla C/C++), a GUI, and the synthetic benchmark Ril. Experiments were performed on an Intel Xeon-E2630v3 with 512GB RAM.
