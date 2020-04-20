@@ -37,11 +37,12 @@ From this definition we see that the \textbf{usage} of a pattern is a sum of how
 
 \subsection{Generating Synthetic Datasets}
 
-The synthetic dataset generator Ril is a small utility that produces random matrices and their ground-truths based on several parameters. By testing the output of Vouw on these matrices against the given ground-truth, we can assess both quality and quantity of the patterns discovered by the algorithm. One of the problems with synthetic data generation is that its parameters have a wide range that may or may not have any relation with real use-cases of the algorithm. Moreover, these parameters heavily influence the performance of the algorithm in a way that may not actually be representative, putting an undue bias on the test results. In this section we explain some of the parameters of Ril and discuss what values we have chosen and why.
+This section discusses the synthetic dataset generator Ril, a small utility that produces random matrices and their ground-truths based on several parameters. By testing the output of Vouw on these matrices against the given ground-truth, we can assess both quality and quantity of the patterns discovered by the algorithm. One of the problems with synthetic data generation is that its parameters have a wide range that may or may not have any relation with real use-cases of the algorithm. Moreover, these parameters heavily influence the performance of the algorithm in a way that may not actually be representative, putting an undue bias on the test results. In this section we also explain some of the parameters of Ril and discuss what values we have chosen and why.
+
 
 \subsubsection{Parameters}
 
-We start by listing all parameters to Ril in Table \ref{table:ril}. Apart from the dimensions, each parameter may require a bit of additional explanation. The alphabet size $|S|$ is strongly connected to the random distributions. Notice that the actual symbols in $S$ are irrelevant for this purpose; they are discrete and unique values without any semantics. During the experiments we noticed two relations between $|S|$ and the performance of the algorithm. First of all, a larger $|S|$ means a larger search space and therefore longer runtime. Especially in the first iterations of the algorithm, more candidates must be considered because more combinations exist in the input. On the other hand, a smaller $|S|$ increases the chance that parts of the noise are identical to (parts of) a pattern. This may lead to false positives (pattern detected in the noise) or may be lead to a pattern not being recognized at all. 
+We start by listing all parameters to Ril in Table \ref{table:ril}. Apart from the dimensions, each parameter may require a bit of additional explanation. $|S|$ determines the size of the alphabet or the range of values that each element in the matrix can take. Notice that the actual symbols in $S$ are irrelevant for this purpose; they are discrete and unique values without any semantics. During the experiments we noticed two relations between $|S|$ and the performance of the algorithm: (1) a larger $|S|$ means a larger search space and therefore longer runtime. Especially in the first iterations of the algorithm, more candidates must be considered because more combinations exist in the input. (2) a smaller $|S|$ increases the chance that parts of the noise are identical to (parts of) a pattern. This may lead to false positives (pattern detected in the noise) which could not have been detected by the algorithm (or any algorithm, for that matter).  We have chosen to use a fixed value of $|S|=256$ throughout the experiments. The reason for this is that we wanted to minimize the effect of 'ghost patterns' mentioned above, but also make it 'difficult enough' performance-wise in order to show any potential scaling issues. Moreover, $|S|=256$ mimics regular greyscale images, which we consider a possible use-case in the future. 
   
 $P_{\mathrm{noise}}$ and $P_{\mathrm{signal}}$ how likely each symbol in $S$ is to be picked for the noise and signal elements respectively. These distributions can be different from each other, or the same. Statistically it is more difficult to separate signal from noise if $P_{\mathrm{noise}} = P_{\mathrm{signal}}$, which is why we used this scenario exclusively during the experiments. Furthermore we picked both distributions to be uniform, i.e. each symbol has a chance of $\frac{1}{|S|}$ to occur.
 
@@ -68,6 +69,14 @@ Branching fact. & $B$ & Allows hierarchical patterns ($B>0$) or 'flat' patterns 
 \end{tabular*}
 \end{table}
 
-\emph{This part of the Appendix is a placeholder and will be updated for the definitive archive version, before the actual publication date of the paper.}
+The \emph{signal-to-noise ratio} (SNR) specifies the ratio of the number of elements belonging to a pattern (signal) versus the number of noise elements. This value is normalized on $[0;1]$. Due to the greedy nature of the synthesizing algorithm, the desired target SNR is approximated rather than exact. This also means that $\mathrm{SNR}=1$ is not possible, but this is hardly relevant with respect to real-world data. We have tested against a variety of SNRs to determine its influence on the algorithm's performance. It appears that low values for SNR generally produce data that is easier to process, because it contains fewer patterns that stand out more clearly against the noise. This may seems somewhat counter-intuitive because high SNRs are associated with cleaner signals. In reality this means that the algorithm is very good at ignoring this particular noise and that it is therefore almost irrelevant in the experiments we did. Further research should therefore probably experiment with different noise types and/or different metrics than SNR.
+
+\subsubsection{Random Patterns}
+
+The pattern generator algorithm in Ril is very simplistic. It uses \emph{random walks} in order to find empty elements to form a pattern, while taking adjacency into account (see the definition of a pattern in Section 3.1).
+
+\subsubsection{Flat and Branching Patterns}
+
+
 
 \end{document}
